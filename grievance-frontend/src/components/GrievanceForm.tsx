@@ -1,172 +1,183 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const GrievanceForm = () => {
-  const [otpSent, setOtpSent] = useState(false);
-  const [formData, setFormData] = useState({
-    category: "",
-    grievanceType: "",
-    description: "",
-    attachment: null as File | null,
-    email: "student@example.com", // or receive via props/context
-    otp: "",
-  });
+interface GrievanceCategory {
+  category: string;
+  types: string[];
+}
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+const GrievanceTypeDropdown = () => {
+  const [categories, setCategories] = useState<GrievanceCategory[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [grievanceTypes, setGrievanceTypes] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.size > 5 * 1024 * 1024) {
-      alert("File size must be less than 5MB");
-      return;
-    }
-    setFormData((prev) => ({
-      ...prev,
-      attachment: file || null,
-    }));
-  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/grievance-types");
+        const data = await res.json();
+        setCategories(data.grievanceCategories);
+      } catch (error) {
+        console.error("Error fetching grievance types:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleSendOtp = () => {
-    if (formData.email) {
-      setOtpSent(true);
-      alert("OTP sent to your email!");
-    }
-  };
+    fetchCategories();
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+  // Update grievance types when category changes
+  useEffect(() => {
+    const categoryObj = categories.find(
+      (cat) => cat.category.toLowerCase() === selectedCategory.toLowerCase()
+    );
+    setGrievanceTypes(categoryObj ? categoryObj.types : []);
+  }, [selectedCategory, categories]);
 
+  // some tailwind classes for styling-
+  const rowStyle = "flex flex-col md:flex-row gap-2 mx-1 bg-white p-5";
+  const labelcontrainer = "basis-1/5 content-center";
+  const labelstyle =
+    "font-medium text-gray-700 flex items-center justify-start h-full";
+  const inputStyle =
+    "w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500";
+  // RETURN TSX
   return (
-    <div className="flex justify-center">
-      <form onSubmit={handleSubmit} className="max-w-3xl w-full flex flex-col gap-4 bg-white p-6 rounded shadow">
-        {/* Category */}
-        <div>
-          <label htmlFor="category" className="block font-medium mb-2">
-            Category
-          </label>
-          <div className="flex gap-6 ml-2">
-            {["Academic", "Non-Academic", "Other"].map((option) => (
-              <label key={option} className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="category"
-                  value={option}
-                  checked={formData.category === option}
-                  onChange={handleChange}
-                  className="accent-blue-600"
-                />
-                {option}
-              </label>
-            ))}
-          </div>
+    <div className="p-4  flex flex-col gap-1 m-4 w-[100%]">
+      {/* SELECT CATEGORY */}
+      <div className={rowStyle}>
+        <div className={labelcontrainer}>
+          <label className={labelstyle}>Category</label>
         </div>
+        <div className="flex flex-col md:flex-row justify-between items-center md:w-[50%] ">
+          {["Academic", "Non-Academic", "Optional"].map((category) => (
+            <label key={category} className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="grievanceCategory"
+                value={category}
+                checked={selectedCategory === category}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="accent-blue-600"
+              />
+              <span className="text-gray-800">{category}</span>
+            </label>
+          ))}
+        </div>
+      </div>
 
-        <div>
-          <label htmlFor="grievance type" className="block font-medium mb-2">
+      {/* GRIEVANCE TYPE SELECT */}
+      <div className={rowStyle}>
+        <div className={labelcontrainer}>
+          <label htmlFor="grievanceType" className={labelstyle}>
             Grievance Type
           </label>
-          <select name="grievance" id=""></select>
         </div>
-
-        {/* Description */}
-        <div>
-          <label htmlFor="description" className="block font-medium mb-1">
-            Description (up to 4000 characters)
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            maxLength={4000}
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full p-2 border rounded bg-[#F5F5F5]"
-            rows={5}
-            placeholder="Enter your grievance description..."
-          />
-        </div>
-
-        {/* File Upload */}
-        <div>
-          
-          <label htmlFor="attachment" className="block font-medium mb-1">
-            Attachment (optional, max 5MB)
-          </label>
+        {loading ? (
+          <p>Loading grievance types...</p>
+        ) : selectedCategory === "" ? (
+          <p className="text-sm text-gray-500">
+            Please select a category first.
+          </p>
+        ) : grievanceTypes.length === 0 ? (
           <input
-            type="file"
-            id="attachment"
-            onChange={handleFileChange}
-            className="w-full"
+            type="text"
+            id="grievanceType"
+            name="grievanceType"
+            placeholder="Enter your grievance type"
+            className="w-full p-2 rounded border border-gray-300"
           />
-          {formData.attachment && (
-            <p className={}>
-              Selected: {formData.attachment.name}
-            </p>
-          )}
-        </div>
+        ) : (
+          <select
+            id="grievanceType"
+            name="grievanceType"
+            className="w-full p-2 rounded border border-gray-300"
+            defaultValue=""
+          >
+            <option value="" disabled hidden>
+              Select a grievance type
+            </option>
+            {grievanceTypes.map((type, index) => (
+              <option key={index} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
 
-        {/* Email */}
-        <div className="flex items-center gap-4">
-          <div className="flex-1">
-            <label htmlFor="email" className="block font-medium mb-1">
-              Email
-            </label>
-            <input
-              type="text"
-              name="email"
-              readOnly
-              value={formData.email}
-              className="w-full p-2 border rounded bg-[#F5F5F5] cursor-not-allowed"
-            />
-          </div>
+      {/* DESCRIPTION OF THE GRIEVANCE */}
+      <div className={rowStyle}>
+        <div className={labelcontrainer}>
+          <label
+            htmlFor="description"
+            className={labelstyle + " flex flex-col items-start text-left"}
+          >
+            <span className=""> Description </span>
+            <span className="text-sm text-gray-500">
+              (Please enter your grievance description upto 4000 characters)
+            </span>
+          </label>
+        </div>
+        <textarea
+          id="description"
+          name="description"
+          rows={5}
+          maxLength={4000}
+          placeholder="Describe your grievance here..."
+          className={`${inputStyle} h-32 resize-none rounded border border-gray-300`}
+        />
+      </div>
+
+      {/* PDF FILE ATTACHMENT */}
+      <div className={rowStyle}>
+        <div className={labelcontrainer}>
+          <label
+            htmlFor="attachment"
+            className={labelstyle + " flex flex-col items-start text-left"}
+          >
+            <span className=""> Attachment </span>
+            <span className="text-sm text-gray-500">(if any, max 2.0 MB)</span>
+          </label>
+        </div>
+        <input
+          type="file"
+          id="attachment"
+          name="attachment"
+          accept=".pdf"
+          className={`${inputStyle} + "file:mt-2 file:mr-2 file:py-1 file:px-2 file:border file:border-gray-300 file:rounded file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 hover:file:cursor-pointer"`}
+        />
+      </div>
+
+      {/*EMAIL OTP VERIFICATION  */}
+      <div className={rowStyle}>
+        <div className={labelcontrainer}>
+          <label htmlFor="email" className={labelstyle}>
+            Email
+          </label>
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            name="email"
+            readOnly
+            // value={}
+            className={inputStyle + " w-3/4 p-2 rounded bg-[#F5F5F5]"}
+          />
           <button
             type="button"
-            onClick={handleSendOtp}
-            className="h-10 mt-5 bg-green-500 text-white px-4 rounded hover:bg-green-600"
+            // onClick={}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200"
           >
             Send OTP
           </button>
         </div>
-
-        {/* OTP Input */}
-        {otpSent && (
-          <div>
-            <label htmlFor="otp" className="block font-medium mb-1">
-              Enter OTP
-            </label>
-            <input
-              type="text"
-              name="otp"
-              id="otp"
-              value={formData.otp}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-            <p className="text-sm text-green-600 mt-1">
-              OTP has been sent to your email.
-            </p>
-          </div>
-        )}
-
-        {/* Submit */}
-        <div className="text-right">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };
 
-export default GrievanceForm;
+export default GrievanceTypeDropdown;
