@@ -1,17 +1,21 @@
-const Navbar = () => {
-  const userId = "61520032"; // hardcoded for now
+import React from 'react'
+import Image from 'next/image'
+import { CircleUserRound } from 'lucide-react';
 
+interface NavbarProps {
+  className?: string;
+}
+
+const Navbar = ({ className = '' }: NavbarProps) => {
   return (
-    <div className="absolute top-0 left-0 right-0 z-50 bg-white h-16 px-6 shadow-sm flex items-center justify-between">
-      <h1 className="text-blue-700 text-lg font-semibold">
-        DELHI SKILL AND ENTREPRENEURSHIP UNIVERSITY
-      </h1>
-      <div className="flex items-center gap-2 text-blue-700 font-medium">
-        <span className="text-xl">👤</span>
-        <span>{userId}</span>
+    <div className={`w-full bg-white border-b border-blue-100 p-2 flex justify-between items-center ${className}`}>
+      <Image src="https://dseu.ac.in/assets/DSEULOGOTHICK-Bm0-gkb8.svg" width={40} height={40} alt="logo" className='cursor-pointer ml-2'/>
+      <div className='flex items-center gap-2'>
+        <CircleUserRound className='w-6 h-6 text-blue-600' />
+        <span className='font-medium'>Student</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
