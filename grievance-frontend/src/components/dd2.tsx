@@ -1,6 +1,6 @@
-'use client';
-import React from "react";
-import { useEffect, useState, FormEvent } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 
 interface GrievanceCategory {
   category: string;
@@ -11,12 +11,7 @@ const GrievanceTypeDropdown = () => {
   const [categories, setCategories] = useState<GrievanceCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [grievanceTypes, setGrievanceTypes] = useState<string[]>([]);
-  const [selectedType, setSelectedType] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [attachment, setAttachment] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -30,66 +25,28 @@ const GrievanceTypeDropdown = () => {
         setLoading(false);
       }
     };
+
     fetchCategories();
   }, []);
 
+  // Update grievance types when category changes
   useEffect(() => {
     const categoryObj = categories.find(
       (cat) => cat.category.toLowerCase() === selectedCategory.toLowerCase()
     );
     setGrievanceTypes(categoryObj ? categoryObj.types : []);
-    setSelectedType(""); // Reset type when category changes
   }, [selectedCategory, categories]);
 
+  // some tailwind classes for styling-
   const rowStyle = "flex flex-col md:flex-row gap-2 mx-1 bg-white p-5";
   const labelcontrainer = "basis-1/5 content-center";
   const labelstyle =
     "font-medium text-gray-700 flex items-center justify-start h-full";
   const inputStyle =
     "w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500";
-
-  // Handle form submission
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    try {
-      // Fetch additional data from your API
-      const extraRes = await fetch("/api/additional-data");
-      const extraData = await extraRes.json();
-
-      // Prepare form data
-      const formData = new FormData();
-      formData.append("category", selectedCategory);
-      formData.append("type", selectedType);
-      formData.append("description", description);
-      if (attachment) formData.append("attachment", attachment);
-      formData.append("extra", JSON.stringify(extraData));
-
-      // Submit to your backend
-      const res = await fetch("/api/submit-grievance", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (res.ok) {
-        setSuccess(true);
-        // Optionally reset form here
-      } else {
-        alert("Submission failed.");
-      }
-    } catch (err) {
-      alert("Error submitting form.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
+  // RETURN TSX
   return (
-    <form
-      className="p-4 flex flex-col gap-1 m-4 w-[100%]"
-      onSubmit={handleSubmit}
-      encType="multipart/form-data"
-    >
+    <div className="p-4  flex flex-col gap-1 m-4 w-[100%]">
       {/* SELECT CATEGORY */}
       <div className={rowStyle}>
         <div className={labelcontrainer}>
@@ -105,7 +62,6 @@ const GrievanceTypeDropdown = () => {
                 checked={selectedCategory === category}
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="accent-blue-600"
-                required
               />
               <span className="text-gray-800">{category}</span>
             </label>
@@ -133,18 +89,13 @@ const GrievanceTypeDropdown = () => {
             name="grievanceType"
             placeholder="Enter your grievance type"
             className="w-full p-2 rounded border border-gray-300"
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-            required
           />
         ) : (
           <select
             id="grievanceType"
             name="grievanceType"
             className="w-full p-2 rounded border border-gray-300"
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-            required
+            defaultValue=""
           >
             <option value="" disabled hidden>
               Select a grievance type
@@ -179,8 +130,6 @@ const GrievanceTypeDropdown = () => {
           placeholder="Describe your grievance here..."
           required
           className={`${inputStyle} h-32 resize-none rounded border border-gray-300`}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
         />
       </div>
 
@@ -200,24 +149,38 @@ const GrievanceTypeDropdown = () => {
           id="attachment"
           name="attachment"
           accept=".pdf"
-          className={`${inputStyle} file:mt-2 file:mr-2 file:py-1 file:px-2 file:border file:border-gray-300 file:rounded file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 hover:file:cursor-pointer`}
-          onChange={(e) =>
-            setAttachment(e.target.files && e.target.files[0] ? e.target.files[0] : null)
-          }
+          className={`${inputStyle} + "file:mt-2 file:mr-2 file:py-1 file:px-2 file:border file:border-gray-300 file:rounded file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 hover:file:cursor-pointer"`}
         />
       </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200 mt-4"
-        disabled={submitting}
-      >
-        {submitting ? "Submitting..." : "Submit"}
-      </button>
-      {success && (
-        <div className="text-green-600 mt-2">Grievance submitted successfully!</div>
-      )}
-    </form>
+      {/*EMAIL OTP VERIFICATION  */}
+      {/* <div className={rowStyle}>
+        <div className={labelcontrainer}>
+          <label htmlFor="email" className={labelstyle}>
+            Email
+          </label>
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            name="email"
+            readOnly
+            // value={}
+            className={inputStyle + " w-3/4 p-2 rounded bg-[#F5F5F5]"}
+          />
+          <button
+            type="button"
+            // onClick={}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200"
+          >
+            Send OTP
+          </button>
+        </div>
+      </div> */}
+
+
+
+    </div>
   );
 };
 
