@@ -73,7 +73,7 @@ const GrievanceTypeDropdown = () => {
       <div className={rowStyle}>
         <div className={labelcontrainer}>
           <label htmlFor="grievanceType" className={labelstyle}>
-            Grievance Type
+            Subject Type
           </label>
         </div>
         {loading ? (
@@ -128,6 +128,7 @@ const GrievanceTypeDropdown = () => {
           rows={5}
           maxLength={4000}
           placeholder="Describe your grievance here..."
+          required
           className={`${inputStyle} h-32 resize-none rounded border border-gray-300`}
         />
       </div>
@@ -153,7 +154,7 @@ const GrievanceTypeDropdown = () => {
       </div>
 
       {/*EMAIL OTP VERIFICATION  */}
-      <div className={rowStyle}>
+      {/* <div className={rowStyle}>
         <div className={labelcontrainer}>
           <label htmlFor="email" className={labelstyle}>
             Email
@@ -175,7 +176,8 @@ const GrievanceTypeDropdown = () => {
             Send OTP
           </button>
         </div>
-      </div>
+      </div> */}
+
     </div>
   );
 };
