@@ -1,20 +1,25 @@
 'use client'
 import React, { useState } from 'react'
 import { NavItems } from '@/styles/constants'
+import { AdminNavItems } from '@/styles/adminConstants'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 
 interface SidebarProps {
   className?: string;
+  userType?: 'admin' | 'student';
 }
 
-const Sidebar = ({ className = '' }: SidebarProps) => {
+const Sidebar = ({ className = '', userType = 'admin' }: SidebarProps) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true)
   const pathname = usePathname()
   const router = useRouter()
 
-  const topNavItems = NavItems.filter(item => item.position === 'top')
-  const bottomNavItems = NavItems.filter(item => item.position === 'bottom')
+  // Select navigation items based on user type
+  const navItems = userType === 'student' ? AdminNavItems : NavItems
+
+  const topNavItems = navItems.filter(item => item.position === 'top')
+  const bottomNavItems = navItems.filter(item => item.position === 'bottom')
 
   const handleNavigation = (href: string) => {
     router.push(href)
@@ -36,7 +41,7 @@ const Sidebar = ({ className = '' }: SidebarProps) => {
             <div
               key={index}
               onClick={() => handleNavigation(item.href)}
-              className={`flex items-center p-3 cursor-pointer transition-all duration-200 ease-in-out ${
+              className={`flex items-center ${isSidebarExpanded? 'p-3' : 'p-1'} cursor-pointer transition-all duration-200 ease-in-out ${
                 isSidebarExpanded ? 'justify-start' : 'justify-center'
               } ${
                 pathname === item.href 
@@ -55,6 +60,7 @@ const Sidebar = ({ className = '' }: SidebarProps) => {
             </div>
           ))}
         </div>
+
         <div className="mt-auto border-t border-blue-100">
           {bottomNavItems.map((item, index) => (
             <div

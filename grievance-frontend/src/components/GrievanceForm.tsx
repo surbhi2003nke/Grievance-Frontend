@@ -106,7 +106,7 @@ const GrievanceForm = () => {
             className="w-full"
           />
           {formData.attachment && (
-            <p className={}>
+            <p className="">
               Selected: {formData.attachment.name}
             </p>
           )}

@@ -25,17 +25,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="min-h-screen flex flex-col">
           <Navbar className="fixed top-0 left-0 right-0 z-50 h-16" />
           <div className="flex flex-1 pt-16">
-            <Sidebar className="relative h-[calc(100vh-4rem)]" />
+            {/* <Sidebar className="relative h-[calc(100vh-4rem)]" />
             <main className="flex-1 p-6 transition-all duration-300 ease-in-out">
               {children}
-            </main>
+            </main> */}
+            <Sidebar/>
+            <div className="w-full overflow-x-auto bg-blue-50">
+              <div className="sm:h-[calc(99vh-60px)] overflow-auto">
+                <div className="w-full flex overflow-auto h-[calc(100vh-110px)] overflow-y-auto relative">
+                  <div className="w-full m-5">
+                    {children}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </body>
