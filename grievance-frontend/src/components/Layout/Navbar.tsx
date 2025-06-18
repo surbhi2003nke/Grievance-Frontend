@@ -1,12 +1,13 @@
-import React from 'react'
-import Image from 'next/image'
-import { CircleUserRound } from 'lucide-react';
+"use client";
+import React from "react";
+import Image from "next/image";
+import { CircleUserRound } from "lucide-react";
 
 interface NavbarProps {
   className?: string;
 }
 
-const Navbar = ({ className = '' }: NavbarProps) => {
+const Navbar = ({ className = "" }: NavbarProps) => {
   return (
     <div className={`w-full bg-white border-b border-blue-100 p-2 flex justify-between items-center ${className}`}>
       <Image src="https://dseu.ac.in/assets/DSEULOGOTHICK-Bm0-gkb8.svg" width={40} height={40} alt="logo" className='cursor-pointer ml-2 mt-2'/>
@@ -15,7 +16,7 @@ const Navbar = ({ className = '' }: NavbarProps) => {
         <span className='font-medium'>Student</span>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
