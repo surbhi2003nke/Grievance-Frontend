@@ -1,9 +1,10 @@
 import React from 'react'
+import NewGrievance from './grievance/new/page'
 
 const admin = () => {
   return (
-    <div className='w-full bg-green-300 h-[100vh] rounded-2xl'>
-      admin
+    <div >
+      <NewGrievance/>
     </div>
   )
 }

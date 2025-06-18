@@ -75,8 +75,9 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
+    console.error("Error processing POST request in grievance-types route:", error);
     return NextResponse.json(
-      { error: "Invalid JSON or request body." },
+      { error: "Invalid JSON or request body.", details: error instanceof Error ? error.message : String(error) },
       { status: 400 }
     );
   }

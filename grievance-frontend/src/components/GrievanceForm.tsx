@@ -180,11 +180,11 @@ const GrievanceForm = () => {
                           onChange={(e) => setSelectedType(e.target.value)}
                           required
                         >
-                          <option value="" disabled>
+                          <option value="" disabled className="text-sm text-slate-500 ">
                             Select a grievance type
                           </option>
                           {grievanceTypes.map((type) => (
-                            <option key={type} value={type}>
+                            <option key={type} value={type} className="text-sm">
                               {type}
                             </option>
                           ))}
