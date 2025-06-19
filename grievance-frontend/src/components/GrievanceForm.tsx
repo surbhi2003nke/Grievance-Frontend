@@ -15,6 +15,7 @@ const GrievanceForm = () => {
   const [selectedType, setSelectedType] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [attachment, setAttachment] = useState<File | null>(null)
+  const [addedAttachment, setAddedAttachment] = useState<boolean>(false)
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -42,6 +43,12 @@ const GrievanceForm = () => {
     setGrievanceTypes(categoryObj ? categoryObj.types : []);
     setSelectedType(""); // Reset type when category changes
   }, [selectedCategory, categories]);
+
+    // Update addedAttachment whenever attachment changes
+  useEffect(() => {
+    setAddedAttachment(!!attachment)
+    console.log("Attachment updated:", attachment);
+  }, [attachment]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
