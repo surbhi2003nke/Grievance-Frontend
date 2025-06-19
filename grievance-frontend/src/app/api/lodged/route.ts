@@ -7,9 +7,9 @@ type Grievance = {
   issueId: string;
   programid: number;
   campusid: number;
-  subject: string;
+  subject: 'Pending' | 'Resolved' |'Rejected' | 'New';
   description: string;
-  issueType: string;
+  issueType: 'Academic' | 'Non-Academic' | 'Examination';
   status: string;
   date: string;
   time: string;
@@ -23,7 +23,7 @@ const grievances: Grievance[] = [
     issueId: "G2024-0001",
     programid: 10028,
     campusid: 1021,
-    subject: "Delay in Assignment Evaluation",
+    subject: "Pending",
     description: "The assignment submitted on 15th March has not been evaluated yet.",
     issueType: "Academic",
     status: "Pending",
@@ -37,12 +37,31 @@ const grievances: Grievance[] = [
     issueId: "G2024-0002",
     programid: 10028,
     campusid: 1021,
-    subject: "Library Book Availability",
+    subject: "Resolved",
     description: "The book 'Data Structures' is not available in the library.",
-    issueType: "Library",
+    issueType: "Examination",
     status: "Resolved",
     date: "2024-03-21",
     time: "11:00 AM",
     attachment: true,
   }
 ];
+
+
+export async function GET() {
+  try {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // This will be replaced with database query later
+    // const grievances = await db.query('SELECT * FROM grievances ORDER BY date DESC');
+    
+    return NextResponse.json(grievances);
+  } catch (error) {
+    console.error('Error fetching grievance history:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch grievance history' },
+      { status: 500 }
+    );
+  }
+}

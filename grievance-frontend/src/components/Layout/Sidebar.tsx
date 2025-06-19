@@ -2,21 +2,22 @@
 import React, { useState } from 'react'
 import { NavItems } from '@/styles/constants'
 import { AdminNavItems } from '@/styles/adminConstants'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, User, Shield } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
 
 interface SidebarProps {
   className?: string;
-  userType?: 'admin' | 'student';
 }
 
-const Sidebar = ({ className = '', userType = 'admin' }: SidebarProps) => {
+const Sidebar = ({ className = '' }: SidebarProps) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true)
   const pathname = usePathname()
   const router = useRouter()
+  const { user, loading, isAdmin, isStudent } = useAuth()
 
-  // Select navigation items based on user type
-  const navItems = userType === 'student' ? AdminNavItems : NavItems
+  // Select navigation items based on user type from auth context
+  const navItems = isStudent ? NavItems : AdminNavItems
 
   const topNavItems = navItems.filter(item => item.position === 'top')
   const bottomNavItems = navItems.filter(item => item.position === 'bottom')
