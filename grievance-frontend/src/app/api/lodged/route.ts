@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 //define type for grievance
-type Grievance = {
+export type Grievance = {
   roll_no: string;
   issueId: string;
   subject: string;

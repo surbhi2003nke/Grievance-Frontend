@@ -44,7 +44,7 @@ const GrievanceForm = () => {
     setSelectedType(""); // Reset type when category changes
   }, [selectedCategory, categories]);
 
-    // Update addedAttachment whenever attachment changes
+// Update addedAttachment whenever attachment changes
   useEffect(() => {
     setAddedAttachment(!!attachment)
     console.log("Attachment updated:", attachment);

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-type AcademicInfo = {
+export type AcademicInfo = {
   roll_no: string;
   programid: number;
   academicyear: number;

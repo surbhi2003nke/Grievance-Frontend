@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 const GrievanceForm = () => {
-  const [otpSent, setOtpSent] = useState(false);
   const [formData, setFormData] = useState({
     category: "",
     grievanceType: "",
