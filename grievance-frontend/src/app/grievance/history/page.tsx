@@ -138,7 +138,7 @@ const History = () => {
                         {new Date(grievance.date).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {grievance.issueType}
+                        {grievance.subject}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span

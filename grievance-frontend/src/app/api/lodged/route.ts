@@ -7,10 +7,10 @@ type Grievance = {
   issueId: string;
   programid: number;
   campusid: number;
-  subject: 'Pending' | 'Resolved' |'Rejected' | 'New';
+  subject: string;
   description: string;
   issueType: 'Academic' | 'Non-Academic' | 'Examination';
-  status: string;
+  status: 'Pending' | 'Resolved' |'Rejected' | 'New';
   date: string;
   time: string;
   attachment: boolean;
@@ -23,7 +23,7 @@ const grievances: Grievance[] = [
     issueId: "G2024-0001",
     programid: 10028,
     campusid: 1021,
-    subject: "Pending",
+    subject: "Assignment not evaluated",
     description: "The assignment submitted on 15th March has not been evaluated yet.",
     issueType: "Academic",
     status: "Pending",
@@ -37,7 +37,7 @@ const grievances: Grievance[] = [
     issueId: "G2024-0002",
     programid: 10028,
     campusid: 1021,
-    subject: "Resolved",
+    subject: "Book not available in library",
     description: "The book 'Data Structures' is not available in the library.",
     issueType: "Examination",
     status: "Resolved",
