@@ -1,0 +1,182 @@
+// "use client";
+// import React, { useEffect, useState } from "react";
+
+// type Grievance = {
+//   roll_no: string;
+//   issueId: string;
+//   subject: string;
+//   description: string;
+//   issueType: string;
+//   status: string;
+//   date: string;
+//   time: string;
+//   attachment: boolean;
+// };
+
+// type StudentInfo = {
+//   roll_no: string;
+//   name: string;
+//   father: string;
+//   mother: string;
+//   aadhar: string;
+//   category: string;
+//   gender: string;
+//   lateral_entry: boolean;
+//   email: string;
+//   mobile: string;
+//   year: number;
+// };
+
+// type AcademicInfo = {
+//   roll_no: string;
+//   programid: number;
+//   academicyear: number;
+//   term: number;
+//   campusid: number;
+//   batch: number;
+//   status: string;
+// };
+
+// type ProgramCampus = {
+//   programName: string;
+//   campusName: string;
+// };
+
+// type EnrichedGrievance = Grievance & {
+//   student?: StudentInfo;
+//   academic?: AcademicInfo;
+//   programName?: string;
+//   campusName?: string;
+// };
+
+// const NewGrievancePage = () => {
+//   const [grievances, setGrievances] = useState<EnrichedGrievance[]>([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchAll = async () => {
+//       setLoading(true);
+//       try {
+//         // 1. Fetch all grievances
+//         const grvRes = await fetch("/api/lodge");
+//         const grvData = await grvRes.json();
+//         const allGrievances: Grievance[] = grvData.grievances || grvData || [];
+
+//         // Only keep grievances with status 'new'
+//         const newGrievances = allGrievances.filter((g) => g.status.toLowerCase() === "new");
+
+//         // 2. Fetch all students
+//         const stuRes = await fetch("/api/student-info");
+//         const stuData = await stuRes.json();
+//         const students: StudentInfo[] = stuData.students || stuData || [];
+
+//         // 3. Fetch all academic info
+//         const acadRes = await fetch("/api/academic-info");
+//         const acadData = await acadRes.json();
+//         const academics: AcademicInfo[] = acadData.academicData || acadData || [];
+
+//         // 4. Enrich each grievance
+//         const enriched: EnrichedGrievance[] = await Promise.all(
+//           newGrievances.map(async (g) => {
+//             const student = students.find((s) => s.roll_no === g.roll_no);
+//             const academic = academics.find((a) => a.roll_no === g.roll_no);
+
+//             let programName = "Unknown Program";
+//             let campusName = "Unknown Campus";
+//             if (academic) {
+//               // Fetch program/campus names
+//               const pcRes = await fetch(
+//                 `/api/program-campus-info?programid=${academic.programid}&campusid=${academic.campusid}`
+//               );
+//               const pcData: ProgramCampus = await pcRes.json();
+//               programName = pcData.programName;
+//               campusName = pcData.campusName;
+//             }
+
+//             return {
+//               ...g,
+//               student,
+//               academic,
+//               programName,
+//               campusName,
+//             };
+//           })
+//         );
+
+//         setGrievances(enriched);
+//       } catch (error) {
+//         console.error("Error loading grievances:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchAll();
+//   }, []);
+
+//   return (
+//     <div>
+//       <h2 className="text-xl font-bold mb-4">New Grievances</h2>
+//       <div className="space-y-6">
+//         {(() => {
+//           if (loading) {
+//             return <div className="text-center text-slate-500 py-8">Loading...</div>;
+//           }
+//           if (grievances.length === 0) {
+//             return <div className="text-center text-slate-500 py-8">No new grievances found.</div>;
+//           }
+//           return grievances.map((g) => (
+//             <div
+//               key={g.issueId}
+//               className="bg-white rounded-lg shadow p-6 flex flex-col gap-2 border border-slate-200"
+//             >
+//               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+//                 <div className="font-semibold text-blue-800 text-lg">{g.subject}</div>
+//                 <div className="text-xs text-slate-500">Issue ID: {g.issueId}</div>
+//               </div>
+//               <div className="flex flex-col md:flex-row md:gap-8 gap-2 text-sm">
+//                 <div>
+//                   <span className="font-medium text-slate-700">Roll No:</span> {g.roll_no}
+//                 </div>
+//                 <div>
+//                   <span className="font-medium text-slate-700">Name:</span> {g.student?.name ?? "—"}
+//                 </div>
+//                 <div>
+//                   <span className="font-medium text-slate-700">Program:</span> {g.programName}
+//                 </div>
+//                 <div>
+//                   <span className="font-medium text-slate-700">Campus:</span> {g.campusName}
+//                 </div>
+//                 <div>
+//                   <span className="font-medium text-slate-700">Academic Year:</span> {g.academic?.academicyear ?? "—"}
+//                 </div>
+//                 <div>
+//                   <span className="font-medium text-slate-700">Batch:</span> {g.academic?.batch ?? "—"}
+//                 </div>
+//                 <div>
+//                   <span className="font-medium text-slate-700">Mobile:</span> {g.student?.mobile ?? "—"}
+//                 </div>
+//                 <div>
+//                   <span className="font-medium text-slate-700">Email:</span> {g.student?.email ?? "—"}
+//                 </div>
+//               </div>
+//               <div className="mt-2 text-slate-700">
+//                 <span className="font-medium">Description:</span> {g.description}
+//               </div>
+//               <div className="mt-2">
+//                 <span className="font-medium text-slate-700">Attachment:</span>{" "}
+//                 {g.attachment ? (
+//                   <span className="text-blue-600">Available</span>
+//                 ) : (
+//                   <span className="text-slate-400">—</span>
+//                 )}
+//               </div>
+//             </div>
+//           ));
+//         })()}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default NewGrievancePage;

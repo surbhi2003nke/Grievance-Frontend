@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 //define type for grievance
-type Grievance = {
+type lodgedGrievance = {
   roll_no: string;
   issueId: string;
   subject: string;
@@ -13,7 +13,7 @@ type Grievance = {
   attachment: boolean;
 };
 
-const grievances: Grievance[] = [
+const grievances: lodgedGrievance[] = [
   {   
     roll_no: "22041520",
     issueId: "G12345",
@@ -129,7 +129,7 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
   try {
-    const grievance: Grievance = await request.json();
+    const grievance: lodgedGrievance = await request.json();
 
     if (!grievance.roll_no || !grievance.issueId || !grievance.subject) {
       return NextResponse.json(
