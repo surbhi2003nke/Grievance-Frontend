@@ -1,79 +1,81 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Activity } from "lucide-react";
+import { Hourglass } from 'lucide-react';
 
-interface Grievance {
-  id: number;
-  date: string;
-  type: string;
-  status: string;
+// Match the type with the API
+type Grievance = {
+  Name: string;
+  roll_no: string;
+  issueId: string;
+  programid: number;
+  campusid: number;
+  subject: string;
   description: string;
-}
+  issueType: string;
+  status: string;
+  date: string;
+  time: string;
+  attachment: boolean;
+};
 
 const History = () => {
   const [grievances, setGrievances] = useState<Grievance[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedGrievance, setExpandedGrievance] = useState<number | null>(
-    null
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [expandedGrievance, setExpandedGrievance] = useState<string | null>(null);
 
-  const toggleAccordion = (id: number) => {
+  const toggleAccordion = (id: string) => {
     setExpandedGrievance(expandedGrievance === id ? null : id);
   };
 
-  const handleTrack = (id: number) => {
+  const handleTrack = (id: string) => {
     // Add tracking functionality here
     console.log("Tracking grievance:", id);
   };
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      setGrievances([
-        {
-          id: 1,
-          date: "2024-03-20",
-          type: "Academic",
-          status: "Pending",
-          description: "Issue with course registration for semester 6",
-        },
-        {
-          id: 2,
-          date: "2024-03-18",
-          type: "Infrastructure",
-          status: "In Progress",
-          description: "Air conditioning not working in Computer Lab 3",
-        },
-        {
-          id: 3,
-          date: "2024-03-15",
-          type: "Administrative",
-          status: "Resolved",
-          description: "Request for duplicate ID card",
-        },
-        {
-          id: 4,
-          date: "2024-03-10",
-          type: "Academic",
-          status: "Pending",
-          description: "Request for revaluation of exam papers",
-        },
-        {
-          id: 5,
-          date: "2024-03-05",
-          type: "Financial",
-          status: "Resolved",
-          description: "Scholarship disbursement delay",
-        },
-      ]);
-      setLoading(false);
-    }, 1000);
+  useEffect(() => {
+    const fetchGrievances = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch('/api/lodged');  // Updated to use correct endpoint
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setGrievances(data);
+      } catch (error) {
+        console.error('Error fetching grievances:', error);
+        setError('Failed to load grievance history. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGrievances();
   }, []);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+        <p className="text-red-500">{error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -109,13 +111,13 @@ const History = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Sr. No.
+                    Issue ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Date
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
+                    Subject
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -126,17 +128,17 @@ const History = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {grievances.map((grievance, index) => (
-                  <React.Fragment key={grievance.id}>
+                {grievances.map((grievance) => (
+                  <React.Fragment key={grievance.issueId}>
                     <tr className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {index + 1}
+                        {grievance.issueId}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {new Date(grievance.date).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {grievance.type}
+                        {grievance.issueType}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
@@ -155,20 +157,20 @@ const History = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-5">
                           <button
-                            onClick={() => handleTrack(grievance.id)}
+                            onClick={() => handleTrack(grievance.issueId)}
                             className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors duration-200"
                           >
-                            <Activity className="w-4 h-4 mr-1.5" />
+                            <Hourglass className="w-4 h-4 mr-1.5" />
                             Track
                           </button>
                           <button
-                            onClick={() => toggleAccordion(grievance.id)}
+                            onClick={() => toggleAccordion(grievance.issueId)}
                             className="text-blue-500 hover:text-blue-600 flex items-center"
                           >
                             <span>View Details</span>
                             <svg
                               className={`w-4 h-4 ml-1 transform transition-transform duration-200 ${
-                                expandedGrievance === grievance.id
+                                expandedGrievance === grievance.issueId
                                   ? "rotate-180"
                                   : ""
                               }`}
@@ -187,12 +189,27 @@ const History = () => {
                         </div>
                       </td>
                     </tr>
-                    {expandedGrievance === grievance.id && (
+                    {expandedGrievance === grievance.issueId && (
                       <tr>
                         <td colSpan={5} className="px-6 py-4 bg-gray-50">
                           <div className="text-sm text-gray-700">
-                            <p className="font-medium mb-2">Description:</p>
-                            <p>{grievance.description}</p>
+                            <div className="flex gap-2.5">
+                              <p className="font-medium mb-2">Subject:</p>
+                              <p className="mb-4">{grievance.subject}</p>
+                            </div>
+                            <div className="flex gap-2.5">
+                              <p className="font-medium mb-2">Description:</p>
+                              <p className="mb-4">{grievance.description}</p>
+                            </div>
+                            <div className="flex gap-2.5">
+                              <p className="font-medium mb-2">Submitted by:</p>
+                              <p>{grievance.Name} ({grievance.roll_no})</p>
+                              {grievance.attachment && (
+                                <p className=" text-blue-500">
+                                  Has attachment
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </td>
                       </tr>

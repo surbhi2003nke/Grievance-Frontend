@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-type StudentInfo = {
+export type StudentInfo = {
   roll_no: string;
   name: string;
   father: string;
@@ -148,8 +148,21 @@ const students = [
 ];
 
 export async function GET() {
-  return NextResponse.json({ students });
+  try {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Return the students array directly
+    return NextResponse.json(students); // Remove the { students } wrapper
+  } catch (error) {
+    console.error('Error fetching student info:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch student information' },
+      { status: 500 }
+    );
+  }
 }
+
 export async function POST(request: Request) {
   try {
     const studentInfo: StudentInfo = await request.json();

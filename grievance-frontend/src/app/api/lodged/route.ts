@@ -6,7 +6,7 @@ type Grievance = {
   issueId: string;
   subject: string;
   description: string;
-  issueType: string;
+  issueType: 'Academic' | 'Non-Academic' | 'Examination';
   status: string;
   date: Date;
   time: Date;
@@ -30,7 +30,7 @@ const grievances: Grievance[] = [
     issueId: "G12346",
     subject: "Poor Infrastructure in Labs",
     description: "The labs are not well-equipped for practicals.",
-    issueType: "Infrastructure",
+    issueType: "Academic",
     status: "Resolved",
     date: new Date("2023-09-15"),
     time: new Date("2023-09-15T11:00:00"),
@@ -41,7 +41,7 @@ const grievances: Grievance[] = [
     issueId: "G12347",
     subject: "Misbehavior by Faculty",
     description: "A faculty member was rude during a class.",
-    issueType: "non-academic",
+    issueType: "Non-Academic",
     status: "New",
     date: new Date("2023-10-05"),
     time: new Date("2023-10-05T09:30:00"),
@@ -52,7 +52,7 @@ const grievances: Grievance[] = [
     issueId: "G12348",
     subject: "Delay in Scholarship Disbursement",
     description: "The scholarship for this semester has not been credited yet.",
-    issueType: "Financial",
+    issueType: "Examination",
     status: "New",
     date: new Date("2023-10-10"),
     time: new Date("2023-10-10T14:00:00"),
@@ -74,7 +74,7 @@ const grievances: Grievance[] = [
     issueId: "G12350",
     subject: "Lack of Extracurricular Activities",
     description: "There are no events or activities planned for this semester.",
-    issueType: "Extracurricular",
+    issueType: "Examination",
     status: "Pending",
     date: new Date("2023-10-12"),
     time: new Date("2023-10-12T15:00:00"),
@@ -106,7 +106,7 @@ const grievances: Grievance[] = [
     issueId: "G12353",
     subject: "Internet Connectivity Issues",
     description: "The internet connection on campus is frequently down.",
-    issueType: "Infrastructure",
+    issueType: "Academic",
     status: "Pending",
     date: new Date("2023-10-20"),
     time: new Date("2023-10-20T16:00:00"),
@@ -116,7 +116,7 @@ const grievances: Grievance[] = [
     issueId: "G12354",
     subject: "Hostel Maintenance Issues",
     description: "There are several maintenance issues in the hostel rooms.",
-    issueType: "Accommodation",
+    issueType: "Non-Academic",
     status: "New",
     date: new Date("2023-10-22"),
     time: new Date("2023-10-22T17:00:00"),
