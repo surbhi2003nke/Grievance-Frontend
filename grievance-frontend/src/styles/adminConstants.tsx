@@ -3,7 +3,7 @@ import { LayoutDashboard, FilePlus, Clock, CheckCircle, Eye, XCircle, LogOut } f
 export const AdminNavItems = [
     {
         title: 'Dashboard',
-        href: '/admin',
+        href: '/admin/grievance/dashboard',
         icon: <LayoutDashboard className="w-5 h-5" />,
         position: 'top',
     },

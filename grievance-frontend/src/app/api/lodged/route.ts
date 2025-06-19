@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 //define type for grievance
-type Grievance = {
+export type Grievance = {
   roll_no: string;
   issueId: string;
   subject: string;
@@ -123,6 +123,8 @@ const grievances: Grievance[] = [
     attachment: true,
   }
 ];
+
+
 
 export async function GET(request: Request) {
   return NextResponse.json(grievances);
