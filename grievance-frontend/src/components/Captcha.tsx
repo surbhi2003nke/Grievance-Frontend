@@ -7,9 +7,10 @@ import { RotateCcw } from "lucide-react"
 interface CaptchaProps {
   onVerify: (verified: boolean) => void
   isEnabled?: boolean
+  reset?: boolean
 }
 
-const Captcha = ({ onVerify, isEnabled = true }: CaptchaProps) => {
+const Captcha = ({ onVerify, isEnabled = true, reset }: CaptchaProps) => {
   const [captchaText, setCaptchaText] = useState("")
   const [userCaptchaInput, setUserCaptchaInput] = useState("")
   const [message, setMessage] = useState("")
@@ -73,6 +74,15 @@ const Captcha = ({ onVerify, isEnabled = true }: CaptchaProps) => {
   useEffect(() => {
     generateCaptcha()
   }, [])
+
+  useEffect(() => {
+    if (reset !== undefined) {
+      setUserCaptchaInput("")
+      setMessage("")
+      generateCaptcha()
+    }
+    // eslint-disable-next-line
+  }, [reset])
 
   const generateCaptcha = () => {
     const random = generateRandomString()

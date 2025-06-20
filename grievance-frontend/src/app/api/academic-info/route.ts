@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export type AcademicInfo = {
   roll_no: string;
@@ -102,9 +102,12 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
 ];
-
-export async function GET() {
-  return NextResponse.json({ academicData });
+// use param to fetch academic info based on roll_no
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const roll_no = searchParams.get("roll_no");
+  const studentAcademicInfo = academicData.find(s => s.roll_no === roll_no);
+  return NextResponse.json(studentAcademicInfo);
 }
 
 export async function POST(request: Request) {

@@ -1,26 +1,26 @@
 import { NextResponse } from "next/server";
 
 //define type for grievance
-type lodgedGrievance = {
+export type Grievance = {
   roll_no: string;
   issueId: string;
   subject: string;
   description: string;
-  issueType: string;
-  status: string;
+  issueType: 'Academic' | 'Non-Academic' | 'Examination';
+  status: "New";
   date: Date;
   time: Date;
   attachment: boolean;
 };
 
-const grievances: lodgedGrievance[] = [
+const grievances: Grievance[] = [
   {   
     roll_no: "22041520",
     issueId: "G12345",
     subject: "Delay in Result Declaration",
     description: "The results for the last semester have not been declared yet.",
     issueType: "Academic",
-    status: "Pending",
+    status: "New",
     date: new Date("2023-10-01"),
     time: new Date("2023-10-01T10:00:00"),
     attachment: false,
@@ -30,8 +30,8 @@ const grievances: lodgedGrievance[] = [
     issueId: "G12346",
     subject: "Poor Infrastructure in Labs",
     description: "The labs are not well-equipped for practicals.",
-    issueType: "Infrastructure",
-    status: "Resolved",
+    issueType: "Academic",
+    status: "New",
     date: new Date("2023-09-15"),
     time: new Date("2023-09-15T11:00:00"),
     attachment: true,
@@ -41,7 +41,7 @@ const grievances: lodgedGrievance[] = [
     issueId: "G12347",
     subject: "Misbehavior by Faculty",
     description: "A faculty member was rude during a class.",
-    issueType: "non-academic",
+    issueType: "Non-Academic",
     status: "New",
     date: new Date("2023-10-05"),
     time: new Date("2023-10-05T09:30:00"),
@@ -52,7 +52,7 @@ const grievances: lodgedGrievance[] = [
     issueId: "G12348",
     subject: "Delay in Scholarship Disbursement",
     description: "The scholarship for this semester has not been credited yet.",
-    issueType: "Financial",
+    issueType: "Examination",
     status: "New",
     date: new Date("2023-10-10"),
     time: new Date("2023-10-10T14:00:00"),
@@ -64,7 +64,7 @@ const grievances: lodgedGrievance[] = [
     subject: "Unfair Exam Practices",
     description: "There were instances of favoritism during the last exam.",
     issueType: "Academic",
-    status: "Resolved",
+    status: "New",
     date: new Date("2023-09-20"),
     time: new Date("2023-09-20T12:00:00"),
     attachment: false,
@@ -74,8 +74,8 @@ const grievances: lodgedGrievance[] = [
     issueId: "G12350",
     subject: "Lack of Extracurricular Activities",
     description: "There are no events or activities planned for this semester.",
-    issueType: "Extracurricular",
-    status: "Pending",
+    issueType: "Examination",
+    status: "New",
     date: new Date("2023-10-12"),
     time: new Date("2023-10-12T15:00:00"),
     attachment: true,
@@ -86,7 +86,7 @@ const grievances: lodgedGrievance[] = [
     subject: "Library Book Availability",
     description: "Many required books are not available in the library.",
     issueType: "Academic",
-    status: "Pending",
+    status: "New",
     date: new Date("2023-10-15"),
     time: new Date("2023-10-15T08:00:00"),
     attachment: false,
@@ -97,7 +97,7 @@ const grievances: lodgedGrievance[] = [
     subject: "Canteen Food Quality",
     description: "The food quality in the canteen has deteriorated.",
     issueType: "Non-Academic",
-    status: "Resolved",
+    status: "New",
     date: new Date("2023-09-25"),
     time: new Date("2023-09-25T13:00:00"),
     attachment: true,
@@ -106,8 +106,8 @@ const grievances: lodgedGrievance[] = [
     issueId: "G12353",
     subject: "Internet Connectivity Issues",
     description: "The internet connection on campus is frequently down.",
-    issueType: "Infrastructure",
-    status: "Pending",
+    issueType: "Academic",
+    status: "New",
     date: new Date("2023-10-20"),
     time: new Date("2023-10-20T16:00:00"),
     attachment: false,
@@ -116,7 +116,7 @@ const grievances: lodgedGrievance[] = [
     issueId: "G12354",
     subject: "Hostel Maintenance Issues",
     description: "There are several maintenance issues in the hostel rooms.",
-    issueType: "Accommodation",
+    issueType: "Non-Academic",
     status: "New",
     date: new Date("2023-10-22"),
     time: new Date("2023-10-22T17:00:00"),
@@ -124,12 +124,13 @@ const grievances: lodgedGrievance[] = [
   }
 ];
 
+
 export async function GET(request: Request) {
   return NextResponse.json(grievances);
 }
 export async function POST(request: Request) {
   try {
-    const grievance: lodgedGrievance = await request.json();
+    const grievance: Grievance = await request.json();
 
     if (!grievance.roll_no || !grievance.issueId || !grievance.subject) {
       return NextResponse.json(

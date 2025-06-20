@@ -1,127 +1,97 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { StudentInfo } from '@/app/api/student-info/route';
-import { Grievance } from '@/app/api/lodged/route';
-import { AcademicInfo } from '@/app/api/academic-info/route';
+import React, { useState, useEffect } from "react";
+import { StudentInfo } from "@/app/api/student-info/route";
+import { Grievance } from "@/app/admin/api/new-lodged-grievances/route";
+import { AcademicInfo } from "@/app/api/academic-info/route";
 
-//create function to fetch grievances, students, and academic info
+const page = () => {
+  //fetch all the grievances with status 'New' from the API
+  const fetchGrievances = async (): Promise<Grievance[]> => {
+    const res = await fetch("/api/new-lodged-grievances");
+    const data = await res.json();
+    return Array.isArray(data) ? data : data.grievances || [];
+  };
 
+  //now each grievance has a roll_no, i need to fetch the student info on the basis of roll_no
+  const fetchStudentInfo = async (
+    roll_no: string
+  ): Promise<StudentInfo | null> => {
+    const res = await fetch(`/api/student-info?roll_no=${roll_no}`);
+    if (!res.ok) {
+      console.error(`Failed to fetch student info for roll_no: ${roll_no}`);
+      return null;
+    }
+    const data = await res.json();
+    return data as StudentInfo;
+  };
 
-// Row type for table
-type GrievanceRow = {
-  grievance: Grievance;
-  student: StudentInfo | null;
-  academic: AcademicInfo | null;
-};
+  //fetch academic info for each student based on roll_no
+  const fetchAcademicInfo = async (
+    roll_no: string
+  ): Promise<AcademicInfo | null> => {
+    const res = await fetch(`/api/academic-info?roll_no=${roll_no}`);
+    if (!res.ok) {
+      console.error(`Failed to fetch academic info for roll_no: ${roll_no}`);
+      return null;
+    }
+    const data = await res.json();
+    return data as AcademicInfo;
+  };
 
-// Fetch all grievances from API
-const fetchGrievances = async (): Promise<Grievance[]> => {
-  const res = await fetch('/api/lodged');
-  const data = await res.json();
-  // If your API returns { grievances: [...] }, adjust accordingly
-  return Array.isArray(data) ? data : data.grievances ?? [];
-};
-
-// Fetch all students from API
-const fetchStudents = async (): Promise<StudentInfo[]> => {
-  const res = await fetch('/api/student-info');
-  const data = await res.json();
-  return Array.isArray(data) ? data : data.students || [];
-};
-
-// Fetch all academic info from API
-const fetchAcademicInfos = async (): Promise<AcademicInfo[]> => {
-  const res = await fetch('/api/academic-info');
-  const data = await res.json();
-  return Array.isArray(data) ? data : data.academicData || [];
-};
-
-const Page = () => {
-  const [rows, setRows] = useState<GrievanceRow[]>([]);
-  const [loading, setLoading] = useState(true);
-
+  //use useEffect to fetch grievances on component mount
+  const [grievances, setGrievances] = useState<Grievance[]>([]);
   useEffect(() => {
-    const fetchAll = async () => {
-      setLoading(true);
+    const loadGrievances = async () => {
       try {
-        const [grievances, students, academics] = await Promise.all([
-          fetchGrievances(),
-          fetchStudents(),
-          fetchAcademicInfos(),
-        ]);
-
-        // Only grievances with status exactly 'New' (case-insensitive)
-        const newGrievances = grievances.filter(
-          g => typeof g.status === 'string' && g.status.trim().toLowerCase() === 'new'
-        );
-
-        // Map each grievance to its student and academic info
-        const rowsData: GrievanceRow[] = newGrievances.map(grievance => {
-          const student = students.find(s => s.roll_no === grievance.roll_no) || null;
-          const academic = academics.find(a => a.roll_no === grievance.roll_no) || null;
-          return { grievance, student, academic };
-        });
-
-        setRows(rowsData);
+        const fetchedGrievances = await fetchGrievances();
+        setGrievances(fetchedGrievances);
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setRows([]);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching grievances:", error);
       }
     };
+    loadGrievances();
+  }, []);  
 
-    fetchAll();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (rows.length === 0) {
-    return <div>No new grievances found.</div>;
-  }
-
-  return (
-    <div>
-      <h2>New Grievances</h2>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>Issue ID</th>
-            <th>Roll No</th>
-            <th>Student Name</th>
-            <th>Subject</th>
-            <th>Issue Type</th>
-            <th>Date</th>
-            <th>Program ID</th>
-            <th>Campus ID</th>
-            <th>Status</th>
+  return <div>
+    <h1 className="text-2xl font-bold mb-4">New Grievances</h1>
+    <table className="min-w-full bg-white border border-gray-200">
+      <thead>
+        <tr>
+          <th className="border px-4 py-2">Roll No</th>
+          <th className="border px-4 py-2">Issue ID</th>
+          <th className="border px-4 py-2">Subject</th>
+          <th className="border px-4 py-2">Description</th>
+          <th className="border px-4 py-2">Issue Type</th>
+          <th className="border px-4 py-2">Status</th>
+          <th className="border px-4 py-2">Date</th>
+          <th className="border px-4 py-2">Time</th>
+          <th className="border px-4 py-2">Attachment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {grievances.map((grievance) => (
+          <tr key={grievance.issueId}>
+            <td className="border px-4 py-2">{grievance.roll_no}</td>
+            <td className="border px-4 py-2">{grievance.issueId}</td>
+            <td className="border px-4 py-2">{grievance.subject}</td>
+            <td className="border px-4 py-2">{grievance.description}</td>
+            <td className="border px-4 py-2">{grievance.issueType}</td>
+            <td className="border px-4 py-2">{grievance.status}</td>
+            <td className="border px-4 py-2">
+              {new Date(grievance.date).toLocaleDateString()}
+            </td>
+            <td className="border px-4 py-2">
+              {new Date(grievance.time).toLocaleTimeString()}
+            </td>
+            <td className="border px-4 py-2">
+              {grievance.attachment ? "Yes" : "No"}
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {rows.map(({ grievance, student, academic }) => (
-            <tr key={grievance.issueId}>
-              <td>{grievance.issueId}</td>
-              <td>{grievance.roll_no}</td>
-              <td>{student?.name ?? '-'}</td>
-              <td>{grievance.subject}</td>
-              <td>{grievance.issueType}</td>
-              <td>
-                {grievance.date
-                  ? new Date(grievance.date).toLocaleDateString()
-                  : '-'}
-              </td>
-              <td>{academic?.programid ?? '-'}</td>
-              <td>{academic?.campusid ?? '-'}</td>
-              <td>{grievance.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+        ))}
+      </tbody>
+    </table>
+  </div>;
 };
 
-export default Page;
+export default page;

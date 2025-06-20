@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
-type GrievanceCategory = {
-  category: string;
-  types: string[];
+export type GrievanceCategory = {
+  issueType: string;
+  subject: string[];
 };
 
 const grievanceCategories: GrievanceCategory[] = [
   {
-    category: "Academic",
-    types: [
+    issueType: "Academic",
+    subject: [
       "Attendance of students",
       "Revaluation practices",
       "Admit card related issue",
@@ -31,8 +31,8 @@ const grievanceCategories: GrievanceCategory[] = [
     ]
   },
   {
-    category: "Non-Academic",
-    types: [
+    issueType: "Non-Academic",
+    subject: [
       "Bus Pass",
       "Id Card Reissue",
       "Issue with information in University Brochure",
@@ -50,13 +50,18 @@ const grievanceCategories: GrievanceCategory[] = [
     ]
   },
   {
-    category: "Optional",
-    types: []
+    issueType: "Optional",
+    subject: []
   }
 ];
 
 export async function GET() {
-  return NextResponse.json({ grievanceCategories });
+  // Sort the subject arrays alphabetically before returning
+  const sortedCategories = grievanceCategories.map(category => ({
+    ...category,
+    subject: [...category.subject].sort((a, b) => a.localeCompare(b))
+  }))
+  return NextResponse.json({ grievanceCategories: sortedCategories });
 }
 
 export async function POST(request: Request) {
