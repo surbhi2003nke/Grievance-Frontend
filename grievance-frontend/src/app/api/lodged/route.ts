@@ -124,6 +124,8 @@ const grievances: Grievance[] = [
   }
 ];
 
+
+
 export async function GET(request: Request) {
   return NextResponse.json(grievances);
 }

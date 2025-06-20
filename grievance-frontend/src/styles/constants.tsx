@@ -3,7 +3,7 @@ import { LayoutDashboard, Upload, History, LogOut, Search } from 'lucide-react';
 export const NavItems = [
     {
         title: 'Dashboard',
-        href: '/',
+        href: '/grievance/dashboard',
         icon: <LayoutDashboard className="w-5 h-5" />,
         position: 'top',
     },

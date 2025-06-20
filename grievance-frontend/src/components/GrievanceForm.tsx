@@ -21,6 +21,20 @@ const GrievanceForm = () => {
   const [success, setSuccess] = useState(false)
   const [captchaVerified, setCaptchaVerified] = useState(false)
 
+  // const academicKeywords = ["attendance", "syllabus", "marks", "assignment"];
+  // const examinationKeywords = ["exam", "revaluation", "result", "paper" ,"course"];
+
+  // function detectCategory(type: string): "Academic" | "Non-Academic" | "Examination" | "" {
+  //   const lowerType = type.toLowerCase();
+  //   if (examinationKeywords.some(keyword => lowerType.includes(keyword))) {
+  //     return "Examination";
+  //   }
+  //   if (academicKeywords.some(keyword => lowerType.includes(keyword))) {
+  //     return "Academic";
+  //   }
+  //   return "";
+  // }
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -44,7 +58,16 @@ const GrievanceForm = () => {
     setSelectedType(""); // Reset type when category changes
   }, [selectedCategory, categories]);
 
-// Update addedAttachment whenever attachment changes
+  // useEffect(() => {
+  //   if(selectedCategory === "Academic"){
+  //     if (selectedType) {
+  //       const detected = detectCategory(selectedType);
+  //       if (detected) setSelectedCategory(detected);
+  //     }
+  //   }
+  // }, [selectedType]);
+
+    // Update addedAttachment whenever attachment changes
   useEffect(() => {
     setAddedAttachment(!!attachment)
     console.log("Attachment updated:", attachment);
