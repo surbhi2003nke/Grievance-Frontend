@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 // Mock auth data - This will be replaced with real authentication later
 const mockAuthData = {
   isAuthenticated: true,
-  userType: "student", // or "admin"
-  userId: "22041528"   // roll number for student, adminId for admin
+  userType: "admin", // or "admin"
+  userId: "1"   // roll number for student, adminId for admin
 };
 
 export async function GET() {

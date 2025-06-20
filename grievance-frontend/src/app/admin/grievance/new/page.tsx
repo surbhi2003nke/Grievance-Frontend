@@ -74,74 +74,67 @@ const Page = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">New Grievances</h1>
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2">Roll No</th>
-            <th className="border px-4 py-2">Student Name</th>
-            <th className="border px-4 py-2">Campus ID</th>
-            <th className="border px-4 py-2">Program ID</th>
-            <th className="border px-4 py-2">Issue ID</th>
-            <th className="border px-4 py-2">Subject</th>
-            <th className="border px-4 py-2">Expand</th>
-          </tr>
-        </thead>
-        <tbody>
-          {grievances.map((grievance) => (
-            <React.Fragment key={grievance.issueId}>
-              <tr>
-                <td className="border px-4 py-2">{grievance.roll_no}</td>
-                <td className="border px-4 py-2">
-                  {studentInfos[grievance.roll_no]?.name || ""}
-                </td>
-                <td className="border px-4 py-2">
-                  {academicInfos[grievance.roll_no]?.campusid || ""}
-                </td>
-                <td className="border px-4 py-2">
-                  {academicInfos[grievance.roll_no]?.programid || ""}
-                </td>
-                <td className="border px-4 py-2">{grievance.issueId}</td>
-                <td className="border px-4 py-2">{grievance.subject}</td>
-                <td className="border px-4 py-2">
-                  <button
-                    onClick={() =>
-                      setExpanded(expanded === grievance.roll_no ? null : grievance.roll_no)
-                    }
-                    className="text-blue-500 underline"
-                  >
-                    {expanded === grievance.roll_no ? "Collapse" : "Expand"}
-                  </button>
-                </td>
-              </tr>
-              {expanded === grievance.roll_no && (
-                <tr>
-                  <td colSpan={7} className="border px-4 py-2 bg-gray-50">
-                    <div>
-                      <div>
-                        <strong>Description:</strong> {grievance.description}
-                      </div>
-                      <div>
-                        <strong>Issue Type:</strong> {grievance.issueType}
-                      </div>
-                      <div>
-                        <strong>Status:</strong> {grievance.status}
-                      </div>
-                      <div>
-                        <strong>Date:</strong> {new Date(grievance.date).toLocaleDateString()}
-                        {" | "}
-                        <strong>Time:</strong> {new Date(grievance.time).toLocaleTimeString()}
-                      </div>
-                      <div>
-                        <strong>Attachment:</strong> {grievance.attachment ? "Yes" : "No"}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
+      <div className="flex flex-col gap-4">
+        {grievances.map((grievance) => (
+          <div
+            key={grievance.issueId}
+            className="border rounded-lg p-4 bg-white shadow-sm"
+          >
+            <div className="flex flex-wrap items-center gap-4">
+              <div>
+                <span className="font-semibold">Roll No:</span> {grievance.roll_no}
+              </div>
+              <div>
+                <span className="font-semibold">Student Name:</span>{" "}
+                {studentInfos[grievance.roll_no]?.name || ""}
+              </div>
+              <div>
+                <span className="font-semibold">Campus ID:</span>{" "}
+                {academicInfos[grievance.roll_no]?.campusid || ""}
+              </div>
+              <div>
+                <span className="font-semibold">Program ID:</span>{" "}
+                {academicInfos[grievance.roll_no]?.programid || ""}
+              </div>
+              <div>
+                <span className="font-semibold">Issue ID:</span> {grievance.issueId}
+              </div>
+              <div>
+                <span className="font-semibold">Subject:</span> {grievance.subject}
+              </div>
+              <button
+                onClick={() =>
+                  setExpanded(expanded === grievance.roll_no ? null : grievance.roll_no)
+                }
+                className="text-blue-500 underline ml-auto"
+              >
+                {expanded === grievance.roll_no ? "Collapse" : "Expand"}
+              </button>
+            </div>
+            {expanded === grievance.roll_no && (
+              <div className="mt-4 bg-gray-50 rounded p-3">
+                <div>
+                  <strong>Description:</strong> {grievance.description}
+                </div>
+                <div>
+                  <strong>Issue Type:</strong> {grievance.issueType}
+                </div>
+                <div>
+                  <strong>Status:</strong> {grievance.status}
+                </div>
+                <div>
+                  <strong>Date:</strong> {new Date(grievance.date).toLocaleDateString()}
+                  {" | "}
+                  <strong>Time:</strong> {new Date(grievance.time).toLocaleTimeString()}
+                </div>
+                <div>
+                  <strong>Attachment:</strong> {grievance.attachment ? "Yes" : "No"}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
