@@ -2,13 +2,10 @@
 import { useEffect, useState, type FormEvent } from "react"
 import Captcha from "./Captcha"
 import { FileText, Upload, AlertCircle, CheckCircle } from "lucide-react"
-
-interface GrievanceCategory {
-  category: string
-  types: string[]
-}
+import { GrievanceCategory } from "@/app/api/grievance-types/route"
 
 const GrievanceForm = () => {
+  const [studentRollNo , setStudentRollNo] = useState<string>("")
   const [categories, setCategories] = useState<GrievanceCategory[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>("")
   const [grievanceTypes, setGrievanceTypes] = useState<string[]>([])
@@ -20,19 +17,42 @@ const GrievanceForm = () => {
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [captchaVerified, setCaptchaVerified] = useState(false)
+  const [captchaReset, setCaptchaReset] = useState(false)
 
-  const academicKeywords = ["attendance", "syllabus", "marks", "assignment"];
-  const examinationKeywords = ["exam", "revaluation", "result", "paper" ,"course"];
+  const academicKeywords = [
+    "attendance", "syllabus", "marks", "assignment", "scholarship", "certificate", "fee",
+    "class", "lecture", "professor", "teacher", "coursework", "grade", "result", "project", "lab", "internal", "midterm", "semester"
+  ];
+  const examinationKeywords = [
+    "exam", "examination", "revaluation", "result", "paper", "course", "admit card", "supplementary", "backlog", "retotaling", "rechecking", "marksheet", "hall ticket"
+  ];
+  const nonAcademicKeywords = [
+    "hostel", "mess", "library", "transport", "infrastructure", "facility", "discipline", "ragging", "harassment", "sports", "medical", "canteen", "wifi", "maintenance", "cleanliness", "security", "event", "club", "cultural", "extra-curricular", "parking", "id card", "bus", "accommodation", "room", "laundry", "water", "electricity", "food", "complaint", "general", "hosteller", "warden", "caretaker", "lost", "found", "bullying", "health", "doctor", "ambulance", "recreation", "gym", "fitness"
+  ];
 
-  function detectCategory(type: string): "Academic" | "Non-Academic" | "Examination" | "" {
-    const lowerType = type.toLowerCase();
-    if (examinationKeywords.some(keyword => lowerType.includes(keyword))) {
-      return "Examination";
-    }
-    if (academicKeywords.some(keyword => lowerType.includes(keyword))) {
-      return "Academic";
-    }
-    return "";
+  function detectCategory(type: string): "Academic" | "Non-Academic" | "Examination" | "Optional" | "" {
+    const normalized = type.trim().toLowerCase();
+  
+    // Helper to check for whole word matches
+    const matchesKeyword = (keywords: string[]) =>
+      keywords.some(keyword => {
+        const pattern = new RegExp(`\\b${keyword.toLowerCase()}\\b`, 'i');
+        return pattern.test(normalized);
+      });
+  
+    if (matchesKeyword(examinationKeywords)) return "Examination";
+    else if (matchesKeyword(academicKeywords)) return "Academic";
+    else return "Non-Academic";
+  
+    // Fallback: partial match (if no exact match found)
+    // const partialMatch = (keywords: string[]) =>
+    //   keywords.some(keyword => normalized.includes(keyword.toLowerCase()));
+  
+    // if (partialMatch(examinationKeywords)) return "Examination";
+    // if (partialMatch(academicKeywords)) return "Academic";
+    // if (partialMatch(nonAcademicKeywords)) return "Non-Academic";
+  
+    // return "";
   }
 
   useEffect(() => {
@@ -52,20 +72,11 @@ const GrievanceForm = () => {
 
   useEffect(() => {
     const categoryObj = categories.find(
-      (cat) => cat.category.toLowerCase() === selectedCategory.toLowerCase()
+      (cat) => cat.issueType.toLowerCase() === selectedCategory.toLowerCase()
     );
-    setGrievanceTypes(categoryObj ? categoryObj.types : []);
+    setGrievanceTypes(categoryObj ? categoryObj.subject : []);
     setSelectedType(""); // Reset type when category changes
   }, [selectedCategory, categories]);
-
-  useEffect(() => {
-    if(selectedCategory === "Academic"){
-      if (selectedType) {
-        const detected = detectCategory(selectedType);
-        if (detected) setSelectedCategory(detected);
-      }
-    }
-  }, [selectedType]);
 
     // Update addedAttachment whenever attachment changes
   useEffect(() => {
@@ -85,20 +96,30 @@ const GrievanceForm = () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
+      // Detect category at submit time
+      const detectedCategory = detectCategory(selectedType);
+
       console.log("Form submitted:", {
-        category: selectedCategory,
-        type: selectedType,
-        description,
+        roll_no:studentRollNo,
+        campus:"gbp",
+        status:"New",
+        issueType: detectedCategory || selectedCategory,
+        subject: selectedType,
+        description:description,
+        Attachment_added:addedAttachment,
         attachment: attachment?.name,
         captchaVerified,
       })
 
       setSuccess(true)
+      setStudentRollNo("")
       setSelectedCategory("")
       setSelectedType("")
       setDescription("")
       setAttachment(null)
       setCaptchaVerified(false)
+      setAddedAttachment(false)
+      setCaptchaReset(r => !r)
     } catch (err) {
       console.error("Error submitting form:", err);
       alert("Error submitting form.")
@@ -128,6 +149,31 @@ const GrievanceForm = () => {
       <div className="max-w-4xl mx-auto px-6 py-8">
         <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
           <form onSubmit={handleSubmit} className="divide-y divide-slate-200">
+
+            {/* Student Roll Number */}
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
+                <div className="md:col-span-1">
+                  <label htmlFor="studentRollNo" className="block text-sm font-semibold text-slate-900 mb-1">
+                    Student Roll Number <span className="text-red-500">*</span>
+                  </label>
+                  <p className="text-xs text-slate-500">Enter your roll number as per records</p>
+                </div>
+                <div className="md:col-span-3">
+                  <input
+                    type="text"
+                    id="studentRollNo"
+                    name="studentRollNo"
+                    placeholder="e.g. 22BCE1234"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={studentRollNo}
+                    onChange={e => setStudentRollNo(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Category Selection */}
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
@@ -300,7 +346,7 @@ const GrievanceForm = () => {
                   <p className="text-xs text-slate-500">Complete the security verification</p>
                 </div>
                 <div className="md:col-span-3">
-                  <Captcha onVerify={setCaptchaVerified} isEnabled={true} />
+                  <Captcha onVerify={setCaptchaVerified} isEnabled={true} reset={captchaReset} />
                 </div>
               </div>
             </div>
