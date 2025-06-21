@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export type StudentInfo = {
   rollno: string;
@@ -147,20 +147,11 @@ const students = [
   },
 ];
 
-export async function GET() {
-  try {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Return the students array directly
-    return NextResponse.json(students); // Remove the { students } wrapper
-  } catch (error) {
-    console.error('Error fetching student info:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch student information' },
-      { status: 500 }
-    );
-  }
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const rollno = searchParams.get("rollno");
+  const student = students.find(s => s.rollno === rollno);
+  return NextResponse.json(student); // Not the whole array!
 }
 
 export async function POST(request: Request) {
