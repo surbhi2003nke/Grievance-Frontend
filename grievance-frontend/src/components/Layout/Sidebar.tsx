@@ -14,10 +14,10 @@ const Sidebar = ({ className = '' }: SidebarProps) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true)
   const pathname = usePathname()
   const router = useRouter()
-  const { user, loading, isAdmin, isStudent } = useAuth()
+  const { user, loading, userType } = useAuth()
 
   // Select navigation items based on user type from auth context
-  const navItems = isAdmin ? AdminNavItems : NavItems
+  const navItems = userType === 'admin' ? AdminNavItems : NavItems
 
   const topNavItems = navItems.filter(item => item.position === 'top')
   const bottomNavItems = navItems.filter(item => item.position === 'bottom')

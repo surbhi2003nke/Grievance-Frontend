@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 const Navbar = ({ className = "" }: NavbarProps) => {
-  const { user, loading, isAdmin, isStudent } = useAuth();
+  const { user, loading, userType } = useAuth();
 
   const getUserDisplay = () => {
     if (loading) {
@@ -20,13 +20,13 @@ const Navbar = ({ className = "" }: NavbarProps) => {
       return "Not logged in";
     }
     
-    if (isAdmin) {
+    if (userType === 'admin') {
       return `Admin: ${user.name}`;
     }
     
-    if (isStudent) {
+    if (userType === 'student') {
       const student = user as StudentInfo; // Type assertion for student
-      return `${student.name} (${student.roll_no})`;
+      return `${student.name} (${student.rollno})`;
     }
     
     return "Unknown user";
@@ -53,7 +53,7 @@ const Navbar = ({ className = "" }: NavbarProps) => {
               {getUserDisplay()}
             </span>
             <span className="text-xs text-gray-500">
-              {isAdmin ? 'Administrator' : isStudent ? 'Student' : 'Guest'}
+              {userType === 'admin' ? 'Administrator' : userType === 'student' ? 'Student' : 'Guest'}
             </span>
           </div>
         </div>

@@ -1,11 +1,19 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import StudentDashboard from "@/components/StudentDashboard";
 import AdminDashboard from "@/components/AdminDashboard";
+import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
-  const { user, loading, error, isAdmin, isStudent } = useAuth();
+  const { user, loading, error, userType, token } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !token) {
+      router.push('/login');
+    }
+  }, [loading, token, router]);
 
   if (loading) {
     return (
@@ -23,10 +31,15 @@ export default function Dashboard() {
     return <div className="p-8 text-red-500">{error}</div>;
   }
 
+  if (!token) {
+    // The redirect will happen in useEffect, so just render nothing here
+    return null;
+  }
+
   let welcomeName = "";
   if (user) {
-    if (isAdmin && "AdminName" in user) welcomeName = String(user.AdminName);
-    if (isStudent && "name" in user) welcomeName = String(user.name);
+    if (userType === "admin" && "name" in user) welcomeName = String(user.name);
+    if (userType === "student" && "name" in user) welcomeName = String(user.name);
   }
 
   return (
@@ -36,9 +49,9 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold text-gray-800">Welcome, {welcomeName}!</h1>
         </div>
       )}
-      {isAdmin && <AdminDashboard />}
-      {isStudent && <StudentDashboard />}
-      {!isAdmin && !isStudent && (
+      {userType === "admin" && <AdminDashboard />}
+      {userType === "student" && <StudentDashboard />}
+      {!userType && (
         <div className="p-8 text-gray-600">
           No dashboard available for your role.<br />
           <a href="/logout" className="text-blue-600 underline">Login with a different account</a>

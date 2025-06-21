@@ -3,9 +3,10 @@ import { useEffect, useState, type FormEvent } from "react"
 import Captcha from "./Captcha"
 import { FileText, Upload, AlertCircle, CheckCircle } from "lucide-react"
 import { GrievanceCategory } from "@/app/api/grievance-types/route"
+import { useAuth } from "@/context/AuthContext"
 
 const GrievanceForm = () => {
-  const [studentRollNo , setStudentRollNo] = useState<string>("")
+  const { token } = useAuth();
   const [categories, setCategories] = useState<GrievanceCategory[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>("")
   const [grievanceTypes, setGrievanceTypes] = useState<string[]>([])
@@ -92,27 +93,61 @@ const GrievanceForm = () => {
       return
     }
 
+    if (!token) {
+      alert("You must be logged in to submit a grievance.");
+      return;
+    }
+
     setSubmitting(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      let issueTypeToSend;
 
-      // Detect category at submit time
-      const detectedCategory = detectCategory(selectedType);
+      // Only run detection if the selected category is 'Academic' or 'Optional'.
+      if (selectedCategory === "Academic" || selectedCategory === "Optional") {
+        issueTypeToSend = detectCategory(selectedType);
+      } else {
+        // For other categories (like 'Non-Academic'), use the selected category directly.
+        issueTypeToSend = selectedCategory;
+      }
 
-      console.log("Form submitted:", {
-        roll_no:studentRollNo,
-        campus:"gbp",
-        status:"New",
-        issueType: detectedCategory || selectedCategory,
+      // Create a plain JavaScript object for the request body.
+      const requestBody = {
+        campus: 'gbc',
         subject: selectedType,
-        description:description,
-        Attachment_added:addedAttachment,
-        attachment: attachment?.name,
-        captchaVerified,
-      })
+        description: description,
+        issue_type: issueTypeToSend,
+        attachment: addedAttachment // Sending boolean status, not the file.
+      };
+
+      // Log the JSON request details for Postman debugging
+      console.log("--- JSON Request Details ---");
+      console.log("URL:", "https://grievanceportal.vercel.app/api/v1/grievances");
+      console.log("Method:", "POST");
+      console.log("Headers:", JSON.stringify({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }, null, 2));
+      console.log("Body (JSON):", JSON.stringify(requestBody, null, 2));
+      console.log("----------------------------");
+
+      const res = await fetch("https://grievanceportal.vercel.app/api/v1/grievances", {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json' // Set content type to JSON
+        },
+        body: JSON.stringify(requestBody), // Send the JSON string
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to submit grievance.");
+      }
+
+      console.log("Grievance submitted successfully:", data);
 
       setSuccess(true)
-      setStudentRollNo("")
       setSelectedCategory("")
       setSelectedType("")
       setDescription("")
@@ -120,9 +155,9 @@ const GrievanceForm = () => {
       setCaptchaVerified(false)
       setAddedAttachment(false)
       setCaptchaReset(r => !r)
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error submitting form:", err);
-      alert("Error submitting form.")
+      alert(`Error submitting form: ${err.message}`)
     } finally {
       setSubmitting(false)
     }
@@ -149,30 +184,6 @@ const GrievanceForm = () => {
       <div className="max-w-4xl mx-auto px-6 py-8">
         <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
           <form onSubmit={handleSubmit} className="divide-y divide-slate-200">
-
-            {/* Student Roll Number */}
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
-                <div className="md:col-span-1">
-                  <label htmlFor="studentRollNo" className="block text-sm font-semibold text-slate-900 mb-1">
-                    Student Roll Number <span className="text-red-500">*</span>
-                  </label>
-                  <p className="text-xs text-slate-500">Enter your roll number as per records</p>
-                </div>
-                <div className="md:col-span-3">
-                  <input
-                    type="text"
-                    id="studentRollNo"
-                    name="studentRollNo"
-                    placeholder="e.g. 22BCE1234"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={studentRollNo}
-                    onChange={e => setStudentRollNo(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
 
             {/* Category Selection */}
             <div className="p-6">
