@@ -20,18 +20,18 @@ const Page = () => {
     return Array.isArray(data) ? data : data.grievances || [];
   };
 
-  // Fetch student info by roll_no
-  const fetchStudentInfo = async (roll_no: string): Promise<StudentInfo> => {
-    const res = await fetch(`/api/student-info?roll_no=${roll_no}`);
-    if (!res.ok) throw new Error(`Failed to fetch student info for roll_no: ${roll_no}`);
+  // Fetch student info by rollno
+  const fetchStudentInfo = async (rollno: string): Promise<StudentInfo> => {
+    const res = await fetch(`/api/student-info?rollno=${rollno}`);
+    if (!res.ok) throw new Error(`Failed to fetch student info for rollno: ${rollno}`);
     const data = await res.json();
     return data.student ?? data;
   };
 
-  // Fetch academic info by roll_no
-  const fetchAcademicInfo = async (roll_no: string): Promise<AcademicInfo> => {
-    const res = await fetch(`/api/academic-info?roll_no=${roll_no}`);
-    if (!res.ok) throw new Error(`Failed to fetch academic info for roll_no: ${roll_no}`);
+  // Fetch academic info by rollno
+  const fetchAcademicInfo = async (rollno: string): Promise<AcademicInfo> => {
+    const res = await fetch(`/api/academic-info?rollno=${rollno}`);
+    if (!res.ok) throw new Error(`Failed to fetch academic info for rollno: ${rollno}`);
     const data = await res.json();
     return data.academic ?? data;
   };
@@ -44,18 +44,18 @@ const Page = () => {
 
         // Fetch all student and academic info in parallel
         const studentInfoResults = await Promise.all(
-          fetchedGrievances.map((g) => fetchStudentInfo(g.roll_no))
+          fetchedGrievances.map((g) => fetchStudentInfo(g.rollno))
         );
         const academicInfoResults = await Promise.all(
-          fetchedGrievances.map((g) => fetchAcademicInfo(g.roll_no))
+          fetchedGrievances.map((g) => fetchAcademicInfo(g.rollno))
         );
 
-        // Map roll_no to info for quick lookup
+        // Map rollno to info for quick lookup
         const studentInfoMap: Record<string, StudentInfo> = {};
         const academicInfoMap: Record<string, AcademicInfo> = {};
         fetchedGrievances.forEach((g, i) => {
-          studentInfoMap[g.roll_no] = studentInfoResults[i];
-          academicInfoMap[g.roll_no] = academicInfoResults[i];
+          studentInfoMap[g.rollno] = studentInfoResults[i];
+          academicInfoMap[g.rollno] = academicInfoResults[i];
         });
 
         setStudentInfos(studentInfoMap);
@@ -82,19 +82,19 @@ const Page = () => {
           >
             <div className="flex flex-wrap items-center gap-4">
               <div>
-                <span className="font-semibold">Roll No:</span> {grievance.roll_no}
+                <span className="font-semibold">Roll No:</span> {grievance.rollno}
               </div>
               <div>
                 <span className="font-semibold">Student Name:</span>{" "}
-                {studentInfos[grievance.roll_no]?.name || ""}
+                {studentInfos[grievance.rollno]?.name || ""}
               </div>
               <div>
                 <span className="font-semibold">Campus ID:</span>{" "}
-                {academicInfos[grievance.roll_no]?.campusid || ""}
+                {academicInfos[grievance.rollno]?.campusid || ""}
               </div>
               <div>
                 <span className="font-semibold">Program ID:</span>{" "}
-                {academicInfos[grievance.roll_no]?.programid || ""}
+                {academicInfos[grievance.rollno]?.programid || ""}
               </div>
               <div>
                 <span className="font-semibold">Issue ID:</span> {grievance.issueId}
@@ -104,14 +104,14 @@ const Page = () => {
               </div>
               <button
                 onClick={() =>
-                  setExpanded(expanded === grievance.roll_no ? null : grievance.roll_no)
+                  setExpanded(expanded === grievance.rollno ? null : grievance.rollno)
                 }
                 className="text-blue-500 underline ml-auto"
               >
-                {expanded === grievance.roll_no ? "Collapse" : "Expand"}
+                {expanded === grievance.rollno ? "Collapse" : "Expand"}
               </button>
             </div>
-            {expanded === grievance.roll_no && (
+            {expanded === grievance.rollno && (
               <div className="mt-4 bg-gray-50 rounded p-3">
                 <div>
                   <strong>Description:</strong> {grievance.description}

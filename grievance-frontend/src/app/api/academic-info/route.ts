@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export type AcademicInfo = {
-  roll_no: string;
+  rollno: string;
   programid: number;
   academicyear: number;
   term: number;
@@ -12,7 +12,7 @@ export type AcademicInfo = {
 
 const academicData: AcademicInfo[] = [
   {
-    roll_no: "22041520",
+    rollno: "22041520",
     programid: 10028,
     academicyear: 2024,
     term: 1,
@@ -21,7 +21,7 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
   {
-    roll_no: "22041521",
+    rollno: "22041521",
     programid: 10028,
     academicyear: 2024,
     term: 1,
@@ -30,7 +30,7 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
   {
-    roll_no: "22041522",
+    rollno: "22041522",
     programid: 10029,
     academicyear: 2024,
     term: 1,
@@ -39,7 +39,7 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
   {
-    roll_no: "22041523",
+    rollno: "22041523",
     programid: 10028,
     academicyear: 2024,
     term: 1,
@@ -48,7 +48,7 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
   {
-    roll_no: "22041524",
+    rollno: "22041524",
     programid: 10030,
     academicyear: 2024,
     term: 1,
@@ -57,7 +57,7 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
   {
-    roll_no: "22041525",
+    rollno: "22041525",
     programid: 10030,
     academicyear: 2024,
     term: 1,
@@ -66,7 +66,7 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
   {
-    roll_no: "22041526",
+    rollno: "22041526",
     programid: 10032,
     academicyear: 2024,
     term: 1,
@@ -75,7 +75,7 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
   {
-    roll_no: "22041527",
+    rollno: "22041527",
     programid: 10031,
     academicyear: 2024,
     term: 1,
@@ -84,7 +84,7 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
   {
-    roll_no: "22041528",
+    rollno: "22041528",
     programid: 10031,
     academicyear: 2024,
     term: 1,
@@ -93,7 +93,7 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
   {
-    roll_no: "22041529",
+    rollno: "22041529",
     programid: 10030,
     academicyear: 2024,
     term: 1,
@@ -102,11 +102,11 @@ const academicData: AcademicInfo[] = [
     status: "ACTIVE",
   },
 ];
-// use param to fetch academic info based on roll_no
+// use param to fetch academic info based on rollno
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const roll_no = searchParams.get("roll_no");
-  const studentAcademicInfo = academicData.find(s => s.roll_no === roll_no);
+  const rollno = searchParams.get("rollno");
+  const studentAcademicInfo = academicData.find(s => s.rollno === rollno);
   return NextResponse.json(studentAcademicInfo);
 }
 
@@ -114,7 +114,7 @@ export async function POST(request: Request) {
   try {
     const academicInfo: AcademicInfo = await request.json();
 
-    if (!academicInfo.roll_no || !academicInfo.programid) {
+    if (!academicInfo.rollno || !academicInfo.programid) {
       return NextResponse.json(
         { error: "Roll number and program ID are required." },
         { status: 400 }

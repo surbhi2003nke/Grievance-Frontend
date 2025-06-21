@@ -6,7 +6,7 @@ import { Hourglass } from 'lucide-react';
 // Match the type with the API
 type Grievance = {
   Name: string;
-  roll_no: string;
+  rollno: string;
   issueId: string;
   programid: number;
   campusid: number;
@@ -203,7 +203,7 @@ const History = () => {
                             </div>
                             <div className="flex gap-2.5">
                               <p className="font-medium mb-2">Submitted by:</p>
-                              <p>{grievance.Name} ({grievance.roll_no})</p>
+                              <p>{grievance.Name} ({grievance.rollno})</p>
                               {grievance.attachment && (
                                 <p className=" text-blue-500">
                                   Has attachment

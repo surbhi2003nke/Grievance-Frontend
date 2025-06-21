@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export type StudentInfo = {
-  roll_no: string;
+  rollno: string;
   name: string;
   father: string;
   mother: string;
@@ -16,7 +16,7 @@ export type StudentInfo = {
 
 const students = [
   {
-    roll_no: "22041520",
+    rollno: "22041520",
     name: "AKHIL SINGH",
     father: "RAVINDRA SINGH",
     mother: "RITU VERMA",
@@ -29,7 +29,7 @@ const students = [
     year: 2024,
   },
   {
-    roll_no: "22041521",
+    rollno: "22041521",
     name: "AMAAN",
     father: "AAS MOHAMMAD KHAN",
     mother: "SHAISTA PRAVEEN",
@@ -42,7 +42,7 @@ const students = [
     year: 2024,
   },
   {
-    roll_no: "22041522",
+    rollno: "22041522",
     name: "AMAAN KHAN",
     father: "NAEEM KHAN",
     mother: "NAZMEEN",
@@ -55,7 +55,7 @@ const students = [
     year: 2024,
   },
   {
-    roll_no: "22041523",
+    rollno: "22041523",
     name: "AMRESH KUMAR",
     father: "MUKUND KUMAR SINGH",
     mother: "RASHMI DEVI",
@@ -68,7 +68,7 @@ const students = [
     year: 2024,
   },
   {
-    roll_no: "22041524",
+    rollno: "22041524",
     name: "ANAND KUMAR",
     father: "SUNIL KUMAR SINGH",
     mother: "ABHA SINGH",
@@ -81,7 +81,7 @@ const students = [
     year: 2024,
   },
   {
-    roll_no: "22041525",
+    rollno: "22041525",
     name: "ANANT SINGH",
     father: "SHAILESH SINGH",
     mother: "PRIYANKA SINGH",
@@ -94,7 +94,7 @@ const students = [
     year: 2024,
   },
   {
-    roll_no: "22041526",
+    rollno: "22041526",
     name: "ANIVESH KUMAR",
     father: "ANIL KUMAR",
     mother: "RINKU DEVI",
@@ -107,7 +107,7 @@ const students = [
     year: 2024,
   },
   {
-    roll_no: "22041527",
+    rollno: "22041527",
     name: "ANJALI",
     father: "JAYANT KUMAR",
     mother: "POONAM KUMARI",
@@ -120,7 +120,7 @@ const students = [
     year: 2024,
   },
   {
-    roll_no: "22041528",
+    rollno: "22041528",
     name: "ANKITA SINGH",
     father: "AMARDEV SINGH",
     mother: "MEERA SINGH",
@@ -133,7 +133,7 @@ const students = [
     year: 2024,
   },
   {
-    roll_no: "22041529",
+    rollno: "22041529",
     name: "ANSUMAN PANDA",
     father: "PRADEEP KUMAR PANDA",
     mother: "ANURAKTA PANDA",
@@ -149,8 +149,8 @@ const students = [
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const roll_no = searchParams.get("roll_no");
-  const student = students.find(s => s.roll_no === roll_no);
+  const rollno = searchParams.get("rollno");
+  const student = students.find(s => s.rollno === rollno);
   return NextResponse.json(student); // Not the whole array!
 }
 
@@ -158,7 +158,7 @@ export async function POST(request: Request) {
   try {
     const studentInfo: StudentInfo = await request.json();
 
-    if (!studentInfo.roll_no || !studentInfo.name) {
+    if (!studentInfo.rollno || !studentInfo.name) {
       return NextResponse.json(
         { error: "Roll number and name are required." },
         { status: 400 }
