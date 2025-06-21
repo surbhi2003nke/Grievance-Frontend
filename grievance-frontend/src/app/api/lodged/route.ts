@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 //define type for grievance
 export type Grievance = {
-  roll_no: string;
+  rollno: string;
   issueId: string;
   subject: string;
   description: string;
@@ -15,7 +15,7 @@ export type Grievance = {
 
 const grievances: Grievance[] = [
   {   
-    roll_no: "22041520",
+    rollno: "22041520",
     issueId: "G12345",
     subject: "Delay in Result Declaration",
     description: "The results for the last semester have not been declared yet.",
@@ -26,7 +26,7 @@ const grievances: Grievance[] = [
     attachment: false,
   },
   {
-    roll_no: "22041521",
+    rollno: "22041521",
     issueId: "G12346",
     subject: "Poor Infrastructure in Labs",
     description: "The labs are not well-equipped for practicals.",
@@ -37,7 +37,7 @@ const grievances: Grievance[] = [
     attachment: true,
   },
   {
-    roll_no: "22041522",
+    rollno: "22041522",
     issueId: "G12347",
     subject: "Misbehavior by Faculty",
     description: "A faculty member was rude during a class.",
@@ -48,7 +48,7 @@ const grievances: Grievance[] = [
     attachment: false,
   },
   {
-    roll_no: "22041523",
+    rollno: "22041523",
     issueId: "G12348",
     subject: "Delay in Scholarship Disbursement",
     description: "The scholarship for this semester has not been credited yet.",
@@ -59,7 +59,7 @@ const grievances: Grievance[] = [
     attachment: true,
   },
   {
-    roll_no: "22041524",
+    rollno: "22041524",
     issueId: "G12349",
     subject: "Unfair Exam Practices",
     description: "There were instances of favoritism during the last exam.",
@@ -70,7 +70,7 @@ const grievances: Grievance[] = [
     attachment: false,
   },
   {
-    roll_no: "22041525",
+    rollno: "22041525",
     issueId: "G12350",
     subject: "Lack of Extracurricular Activities",
     description: "There are no events or activities planned for this semester.",
@@ -81,7 +81,7 @@ const grievances: Grievance[] = [
     attachment: true,
   },
   {
-    roll_no: "22041526",
+    rollno: "22041526",
     issueId: "G12351",
     subject: "Library Book Availability",
     description: "Many required books are not available in the library.",
@@ -92,7 +92,7 @@ const grievances: Grievance[] = [
     attachment: false,
   },
   {
-    roll_no: "22041527",
+    rollno: "22041527",
     issueId: "G12352",
     subject: "Canteen Food Quality",
     description: "The food quality in the canteen has deteriorated.",
@@ -102,7 +102,7 @@ const grievances: Grievance[] = [
     time: new Date("2023-09-25T13:00:00"),
     attachment: true,
   },{
-    roll_no: "22041528",
+    rollno: "22041528",
     issueId: "G12353",
     subject: "Internet Connectivity Issues",
     description: "The internet connection on campus is frequently down.",
@@ -112,7 +112,7 @@ const grievances: Grievance[] = [
     time: new Date("2023-10-20T16:00:00"),
     attachment: false,
   },{
-    roll_no: "22041529",
+    rollno: "22041529",
     issueId: "G12354",
     subject: "Hostel Maintenance Issues",
     description: "There are several maintenance issues in the hostel rooms.",
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
   try {
     const grievance: Grievance = await request.json();
 
-    if (!grievance.roll_no || !grievance.issueId || !grievance.subject) {
+    if (!grievance.rollno || !grievance.issueId || !grievance.subject) {
       return NextResponse.json(
         { error: "Roll number, issue ID, and subject are required." },
         { status: 400 }
