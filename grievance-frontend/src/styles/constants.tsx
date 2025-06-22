@@ -29,6 +29,6 @@ export const NavItems = [
         title: 'Logout',
         href: '/logout',
         icon: <LogOut className="w-5 h-5" />,
-        position: 'bottom',
+        position: 'top',
     },
 ];

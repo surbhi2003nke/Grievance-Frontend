@@ -27,18 +27,34 @@ const geistMono = Geist_Mono({
 function AppContent({ children }: { children: React.ReactNode }) {
   const { token, loading } = useAuth();
   const pathname = usePathname();
-  
+
   // Don't show navbar/sidebar on login page or when not authenticated
-  const isLoginPage = pathname === '/login';
+  const isLoginPage = pathname === "/login";
   const shouldShowLayout = token && !isLoginPage;
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <svg className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+          <svg
+            className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8z"
+            ></path>
           </svg>
           <span className="text-lg text-gray-700">Loading...</span>
         </div>
@@ -49,17 +65,11 @@ function AppContent({ children }: { children: React.ReactNode }) {
   if (shouldShowLayout) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Navbar className="fixed top-0 left-0 right-0 z-50 h-16" />
+        <Navbar className="fixed top-0 left-0 right-0 z-50 h-16" />{" "}
         <div className="flex flex-1 pt-16">
-          <Sidebar/>
-          <div className="w-full overflow-x-auto bg-blue-50">
-            <div className="sm:h-[calc(99vh-60px)] overflow-auto">
-              <div className="w-full flex overflow-auto h-[calc(100vh-110px)] overflow-y-auto relative">
-                <div className="w-full m-5">
-                  {children}
-                </div>
-              </div>
-            </div>
+          <Sidebar />
+          <div className="flex-1 bg-blue-50 ml-16">
+            <div className="p-5 pl-8">{children}</div>
           </div>
         </div>
       </div>
@@ -67,11 +77,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
   }
 
   // For login page or unauthenticated users, show clean layout
-  return (
-    <div className="min-h-screen">
-      {children}
-    </div>
-  );
+  return <div className="min-h-screen">{children}</div>;
 }
 
 export default function RootLayout({
@@ -85,9 +91,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <AppContent>
-            {children}
-          </AppContent>
+          <AppContent>{children}</AppContent>
         </AuthProvider>
       </body>
     </html>
