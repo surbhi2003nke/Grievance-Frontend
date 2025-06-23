@@ -19,19 +19,22 @@ export default function AdminLoginPage({ onLogin, onSwitchToStudent }: {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("https://grievanceportal.vercel.app/api/v1/users/auth/login", {
+      const res = await fetch("https://grievanceportal.vercel.app/api/v1/admin/auth/simple-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
+      console.log(data);
+      
       if (!res.ok) throw new Error(data.message || "Login failed");
+
 
       // Use AuthContext login with the full data object
       login(data, 'admin');
 
       if (onLogin) {
-        onLogin(data.user, data.token); // Pass user object and token
+        onLogin(data.admin, data.token); // Pass admin object and token
       }
 
       // Redirect to dashboard

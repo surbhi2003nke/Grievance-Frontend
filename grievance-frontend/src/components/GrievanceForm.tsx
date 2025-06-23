@@ -120,15 +120,15 @@ const GrievanceForm = () => {
       };
 
       // Log the JSON request details for Postman debugging
-      console.log("--- JSON Request Details ---");
-      console.log("URL:", "https://grievanceportal.vercel.app/api/v1/grievances");
-      console.log("Method:", "POST");
-      console.log("Headers:", JSON.stringify({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }, null, 2));
+      // console.log("--- JSON Request Details ---");
+      // console.log("URL:", "https://grievanceportal.vercel.app/api/v1/grievances");
+      // console.log("Method:", "POST");
+      // console.log("Headers:", JSON.stringify({
+      //   'Authorization': `Bearer ${token}`,
+      //   'Content-Type': 'application/json'
+      // }, null, 2));
       console.log("Body (JSON):", JSON.stringify(requestBody, null, 2));
-      console.log("----------------------------");
+      // console.log("----------------------------");
 
       const res = await fetch("https://grievanceportal.vercel.app/api/v1/grievances", {
         method: "POST",
