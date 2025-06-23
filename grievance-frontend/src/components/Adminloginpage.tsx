@@ -19,7 +19,7 @@ export default function AdminLoginPage({ onLogin, onSwitchToStudent }: {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("https://grievanceportal.vercel.app/api/v1/users/auth/login", {
+      const res = await fetch("https://grievanceportal.vercel.app/api/v1/admin/auth/simple-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -35,7 +35,7 @@ export default function AdminLoginPage({ onLogin, onSwitchToStudent }: {
       }
 
       // Redirect to dashboard
-      router.push('/');
+      router.push('/admin/dashboard');
     } catch (err: any) {
       setError(err.message);
     } finally {

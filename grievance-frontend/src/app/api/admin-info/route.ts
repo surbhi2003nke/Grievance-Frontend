@@ -12,13 +12,14 @@ export type AdminInfo = {
   updatedAt: string;
   role: string[];
   permissions: string[];
+  campusId?: number;
 };
 
 const admins: AdminInfo[] = [
   {
     AdminId: 1,
     name: "Amit",
-    email: "admin@example.com",
+    email: "superadmin@example.com",
     phone: "1234567890",
     isverified: true,
     IsActive: true,
@@ -26,12 +27,13 @@ const admins: AdminInfo[] = [
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     role: ["Super Admin"],
-    permissions: ["read", "write", "delete"]
+    permissions: ["read", "write", "delete"],
+    campusId: 1021 // dwarka campus
   },
   {
     AdminId: 2,
     name: "Sumit",
-    email: "superadmin@example.com",
+    email: "campusadmin@example.com",
     phone: "9876543210",
     isverified: true,
     IsActive: true,
@@ -39,7 +41,51 @@ const admins: AdminInfo[] = [
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     role: ["Campus Admin"],
-    permissions: ["read", "write"]
+    permissions: ["read", "write"],
+    campusId: 1022 // GBPant Campus-1
+  },
+  {
+    AdminId: 3,
+    name: "Ravi",
+    email: "examadmin@example.com",
+    phone: "5555555555",
+    isverified: true,
+    IsActive: true,
+    LastLogin: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    role: ["Examination Admin"],
+    permissions: ["read", "write"],
+    campusId: 1022 // GBPant Campus-1
+  },
+  {
+    AdminId: 4,
+    name: "Priya",
+    email: "academicadmin@example.com"  ,
+    phone: "4444444444",
+    isverified: true,
+    IsActive: true,
+    LastLogin: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    role: ["Academic Admin"],
+    permissions: ["read", "write"],
+    campusId: 1022 // GBPant Campus-1
+  },
+  {
+    AdminId: 5,
+    name: "Anjali",
+    email: "nonacademicadmin@example.com",
+    phone: "3333333333",
+    isverified: true,
+    IsActive: true,
+    LastLogin: new Date().toISOString(),
+
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    role: ["Non-Academic Admin"],
+    permissions: ["read", "write"],
+    campusId: 1022 // GBPant Campus-1
   }
 ];
 
@@ -83,3 +129,5 @@ export async function POST(request: Request) {
     );
   }
 }
+
+
