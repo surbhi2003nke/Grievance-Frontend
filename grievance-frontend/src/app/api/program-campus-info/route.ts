@@ -9,8 +9,8 @@ const programMap: Record<number, string> = {
 };
 
 const campusMap: Record<number, string> = {
-  1021: "Main Campus",
-  1022: "North Campus",
+  1021: "Dwarka Campus",
+  1022: "GBPant Campus-1",
   1023: "South Campus",
   1024: "West Campus",
   1025: "East Campus",

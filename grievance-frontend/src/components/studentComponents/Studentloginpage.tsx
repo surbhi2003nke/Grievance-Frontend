@@ -105,8 +105,8 @@
 
 "use client";
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import AdminLoginPage from "../components/Adminloginpage";
+import { useAuth } from "../../context/AuthContext";
+import AdminLoginPage from "../adminComponents/Adminloginpage";
 import { useRouter } from 'next/navigation';
 
 export default function StudentLoginPage({ onLogin }: { onLogin?: (user: any, token: string) => void }) {

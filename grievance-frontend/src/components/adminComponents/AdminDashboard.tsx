@@ -15,7 +15,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import CreateAdmins from "./CreateAdmins";
+import CreateAdmins from "@/components/adminComponents/CreateAdmins";
 
 const AdminDashboard = () => {
   const [newGrievances, setNewGrievances] = useState(12);

@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import StudentDashboard from "@/components/StudentDashboard";
-import AdminDashboard from "@/components/AdminDashboard";
+import StudentDashboard from "@/components/studentComponents/StudentDashboard";
+import AdminDashboard from "@/components/adminComponents/AdminDashboard";
 import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {

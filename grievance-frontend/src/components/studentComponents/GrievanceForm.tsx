@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState, type FormEvent } from "react"
-import Captcha from "./Captcha"
+import Captcha from "../Captcha"
 import { FileText, Upload, AlertCircle, CheckCircle } from "lucide-react"
 import { GrievanceCategory } from "@/app/api/grievance-types/route"
 import { useAuth } from "@/context/AuthContext"

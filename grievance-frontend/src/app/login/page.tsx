@@ -1,5 +1,5 @@
 "use client";
-import StudentLoginPage from "@/components/Studentloginpage";
+import StudentLoginPage from "@/components/studentComponents/Studentloginpage";
 
 export default function LoginPage() {
   return <StudentLoginPage />;
