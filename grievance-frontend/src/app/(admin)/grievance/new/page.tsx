@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { StudentInfo } from "@/app/api/student-info/route";
-import { Grievance } from "@/app/admin/api/new-lodged-grievances/route";
+import { Grievance } from "@/app/api/new-lodged-grievances/route";
 import { AcademicInfo } from "@/app/api/academic-info/route";
 
 const Page = () => {
