@@ -36,16 +36,15 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const [formData, setFormData] = useState<AdminFormData>({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    role: "academic",
-    campusId: 1,
-    isMainCampus: true,
-  });
+  // Individual state variables for each field
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("academic");
+  const [campusId, setCampusId] = useState(1);
+  const [isMainCampus, setIsMainCampus] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -79,34 +78,34 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
   const validateForm = (): boolean => {
     const newErrors: Partial<AdminFormData> = {};
 
-    if (!formData.name.trim()) {
+    if (!name.trim()) {
       newErrors.name = "Name is required";
-    } else if (formData.name.trim().length < 2) {
+    } else if (name.trim().length < 2) {
       newErrors.name = "Name must be at least 2 characters";
     }
 
-    if (!formData.email.trim()) {
+    if (!email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
-    if (!formData.phone.trim()) {
+    if (!phone.trim()) {
       newErrors.phone = "Phone number is required";
-    } else if (!/^[+]?[\d\s\-()]{10,}$/.test(formData.phone)) {
+    } else if (!/^[+]?[\d\s\-()]{10,}$/.test(phone)) {
       newErrors.phone = "Please enter a valid phone number";
     }
 
-    if (!formData.password) {
+    if (!password) {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
+    } else if (password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
       newErrors.password =
         "Password must contain uppercase, lowercase, and number";
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (password !== confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
@@ -114,33 +113,11 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle input changes
-  const handleInputChange = (
-    field: keyof AdminFormData,
-    value: string | number | boolean
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-
-    // Clear error for this field when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => ({
-        ...prev,
-        [field]: undefined,
-      }));
-    }
-  };
-
   // Handle campus selection
   const handleCampusChange = (campusId: number) => {
     const selectedCampus = campuses.find((c) => c.id === campusId);
-    setFormData((prev) => ({
-      ...prev,
-      campusId,
-      isMainCampus: selectedCampus?.isMain || false,
-    }));
+    setCampusId(campusId);
+    setIsMainCampus(selectedCampus?.isMain || false);
   };
 
   // Handle form submission
@@ -156,13 +133,13 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
     try {
       // Prepare the API payload according to your specified structure
       const payload = {
-        name: formData.name.trim(),
-        email: formData.email.trim().toLowerCase(),
-        phone: formData.phone.trim(),
-        password: formData.password,
-        role: formData.role,
-        campusId: formData.campusId,
-        isMainCampus: formData.isMainCampus,
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone.trim(),
+        password: password,
+        role: role,
+        campusId: campusId,
+        isMainCampus: isMainCampus,
       };
 
       console.log("Creating admin with payload:", payload);
@@ -190,16 +167,14 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
       alert("Admin created successfully!");
 
       // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        password: "",
-        confirmPassword: "",
-        role: "academic",
-        campusId: 1,
-        isMainCampus: true,
-      });
+      setName("");
+      setEmail("");
+      setPhone("");
+      setPassword("");
+      setConfirmPassword("");
+      setRole("academic");
+      setCampusId(1);
+      setIsMainCampus(true);
 
       // Clear any existing errors
       setErrors({});
@@ -234,7 +209,7 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
     return { strength, label: "Strong", color: "text-green-500" };
   };
 
-  const passwordStrength = getPasswordStrength(formData.password);
+  const passwordStrength = getPasswordStrength(password);
 
   if (!isOpen) return null;
 
@@ -278,8 +253,11 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                 </label>
                 <input
                   type="text"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+                  }}
                   className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
                     errors.name ? "border-red-500" : "border-gray-300"
                   }`}
@@ -301,8 +279,11 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                 </label>
                 <input
                   type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
+                  }}
                   className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
@@ -325,12 +306,15 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
               </label>
               <input
                 type="tel"
-                value={formData.phone}
-                onChange={(e) => handleInputChange("phone", e.target.value)}
+                value={phone}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+                }}
                 className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
                   errors.phone ? "border-red-500" : "border-gray-300"
                 }`}
-                placeholder="+1-555-0123"
+                placeholder="+91 "
               />
               {errors.phone && (
                 <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -355,8 +339,8 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                   Administrative Role *
                 </label>
                 <select
-                  value={formData.role}
-                  onChange={(e) => handleInputChange("role", e.target.value)}
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                 >
                   {roles.map((role) => (
@@ -374,7 +358,7 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                   Campus Assignment *
                 </label>
                 <select
-                  value={formData.campusId}
+                  value={campusId}
                   onChange={(e) => handleCampusChange(Number(e.target.value))}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                 >
@@ -394,10 +378,10 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                 Campus Type:
                 <span
                   className={`ml-1 font-medium ${
-                    formData.isMainCampus ? "text-purple-600" : "text-blue-600"
+                    isMainCampus ? "text-purple-600" : "text-blue-600"
                   }`}
                 >
-                  {formData.isMainCampus ? "Main Campus" : "Branch Campus"}
+                  {isMainCampus ? "Main Campus" : "Branch Campus"}
                 </span>
               </span>
             </div>
@@ -419,10 +403,11 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    value={formData.password}
-                    onChange={(e) =>
-                      handleInputChange("password", e.target.value)
-                    }
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
+                    }}
                     className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
                       errors.password ? "border-red-500" : "border-gray-300"
                     }`}
@@ -440,7 +425,7 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                     )}
                   </button>
                 </div>
-                {formData.password && (
+                {password && (
                   <div className="mt-2 flex items-center space-x-2">
                     <div className="flex-1 bg-gray-200 rounded-full h-2">
                       <div
@@ -481,10 +466,11 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
-                    value={formData.confirmPassword}
-                    onChange={(e) =>
-                      handleInputChange("confirmPassword", e.target.value)
-                    }
+                    value={confirmPassword}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
+                    }}
                     className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
                       errors.confirmPassword
                         ? "border-red-500"
@@ -504,8 +490,8 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                     )}
                   </button>
                 </div>
-                {formData.confirmPassword &&
-                  formData.password === formData.confirmPassword && (
+                {confirmPassword &&
+                  password === confirmPassword && (
                     <p className="mt-1 text-sm text-green-600 flex items-center">
                       <Check className="w-4 h-4 mr-1" />
                       Passwords match
