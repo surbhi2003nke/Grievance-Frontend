@@ -14,8 +14,11 @@ import {
   HelpCircle,
   BarChart3,
 } from "lucide-react";
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 const StudentDashboard = () => {
+  useAuthRedirect();
+  
   const [pendingGrievancenumber, setPendingGrievnacenumber] = useState(0);
   const [resolvedGrievancenumber, setResolvedGrievnacenumber] = useState(0);
   const [inProgressNumber, setInProgressNumber] = useState(0);

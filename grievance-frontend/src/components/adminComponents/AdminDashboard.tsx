@@ -16,8 +16,12 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import CreateAdmins from "@/components/adminComponents/CreateAdmins";
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 const AdminDashboard = () => {
+
+  useAuthRedirect();
+  
   const [newGrievances, setNewGrievances] = useState(12);
   const [pendingGrievances, setPendingGrievances] = useState(8);
   const [resolvedGrievances, setResolvedGrievances] = useState(45);

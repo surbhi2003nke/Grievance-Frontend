@@ -4,7 +4,7 @@ import NewGrievance from './grievance/new/page'
 const admin = () => {
   return (
     <div >
-      <NewGrievance/>
+      {/* <NewGrievance/> */}
     </div>
   )
 }
