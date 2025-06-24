@@ -43,8 +43,8 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
     password: "",
     confirmPassword: "",
     role: "academic",
-    campusId: 1,
-    isMainCampus: true,
+    campusId: 1011,
+    isMainCampus: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -52,27 +52,34 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Partial<AdminFormData>>({});
 
-  // Campus options with their IDs
+  // Campus options with their IDs and exact names from your campusinfo table
   const campuses = [
-    { id: 1, name: "Main Campus - New Delhi", isMain: true },
-    { id: 2, name: "East Campus - Shahdara", isMain: false },
-    { id: 3, name: "West Campus - Dwarka", isMain: false },
-    { id: 4, name: "North Campus - Rohini", isMain: false },
-    { id: 5, name: "South Campus - Hauz Khas", isMain: false },
+    { id: 1011, code: "ABIT", name: "ARYABHATT DSEU ASHOK VIHAR CAMPUS", isMain: false },
+    { id: 1012, code: "AIT", name: "AMBEDKAR DSEU CAMPUS-I", isMain: false },
+    { id: 1013, code: "BPIBS", name: "BHAI PARMANAND DSEU SHAKARPUR CAMPUS-II", isMain: false },
+    { id: 1014, code: "CDO", name: "CHAMPS DSEU OKHLA CAMPUS", isMain: false },
+    { id: 1015, code: "CVR", name: "SIR C.V. RAMAN DSEU DHEERPUR CAMPUS", isMain: false },
+    { id: 1016, code: "DDC", name: "DSEU DWARKA CAMPUS", isMain: false },
+    { id: 1017, code: "DJC", name: "DSEU JAFFARPUR CAMPUS", isMain: false },
+    { id: 1018, code: "DRC", name: "DSEU RAJOKRI CAMPUS", isMain: false },
+    { id: 1019, code: "DWC", name: "DSEU WAZIRPUR-I CAMPUS", isMain: false },
+    { id: 1020, code: "GBP", name: "G.B. PANT DSEU OKHLA-I CAMPUS", isMain: false },
+    { id: 1021, code: "GND", name: "GURU NANAK DEV DSEU ROHINI CAMPUS", isMain: false },
+    { id: 1022, code: "KDP", name: "KASTURBA DSEU PITAMPURA CAMPUS (FOR GIRLS ONLY)", isMain: false },
+    { id: 1023, code: "MBC", name: "MEERABAI DSEU MAHARANI BAGH CAMPUS (FOR GIRLS ONLY)", isMain: false },
+    { id: 1024, code: "MVC", name: "DR. H.J. BHABHA DSEU MAYUR VIHAR CAMPUS", isMain: false },
+    { id: 1025, code: "OC-II", name: "DSEU OKHLA-II CAMPUS", isMain: false },
+    { id: 1026, code: "PIC", name: "DSEU PUSA CAMPUS-I", isMain: false },
+    { id: 1027, code: "PIC-II", name: "DSEU PUSA CAMPUS-II", isMain: false },
+    { id: 1028, code: "SFC", name: "DSEU SIRI FORT CAMPUS", isMain: false },
+    { id: 1029, code: "VVC", name: "DSEU VIVEK VIHAR CAMPUS", isMain: false },
   ];
 
-  // Role options
+  // Role options (only academic, exam, campus)
   const roles = [
-    { value: "academic", label: "Academic Affairs" },
-    { value: "administrative", label: "Administrative" },
-    { value: "finance", label: "Finance & Accounts" },
-    { value: "student_affairs", label: "Student Affairs" },
-    { value: "examination", label: "Examination" },
-    { value: "library", label: "Library" },
-    { value: "hostel", label: "Hostel Management" },
-    { value: "placement", label: "Placement & Training" },
-    { value: "maintenance", label: "Infrastructure & Maintenance" },
-    { value: "super_admin", label: "Super Administrator" },
+    { value: "academic", label: "Academic" },
+    { value: "exam", label: "Examination" },
+    { value: "campus", label: "Campus" },
   ];
 
   // Validation function
@@ -158,18 +165,17 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
       const payload = {
         name: formData.name.trim(),
         email: formData.email.trim().toLowerCase(),
-        phone: formData.phone.trim(),
         password: formData.password,
         role: formData.role,
+        department: formData.role === 'academic' ? 'academic' : formData.role,
         campusId: formData.campusId,
-        isMainCampus: formData.isMainCampus,
       };
 
       console.log("Creating admin with payload:", payload);
 
       // Make API call to create admin
       const response = await fetch(
-        "https://grievanceportal.vercel.app/api/v1/super-admin/admins",
+        "http://localhost:5000/api/v1/super-admin/admins",
         {
           method: "POST",
           headers: {
@@ -197,8 +203,8 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
         password: "",
         confirmPassword: "",
         role: "academic",
-        campusId: 1,
-        isMainCampus: true,
+        campusId: 1011,
+        isMainCampus: false,
       });
 
       // Clear any existing errors
@@ -380,7 +386,7 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
                 >
                   {campuses.map((campus) => (
                     <option key={campus.id} value={campus.id}>
-                      {campus.name}
+                      {campus.name} ({campus.code})
                     </option>
                   ))}
                 </select>
