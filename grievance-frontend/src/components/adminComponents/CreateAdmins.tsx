@@ -77,9 +77,10 @@ const CreateAdmins: React.FC<CreateAdminsProps> = ({
 
   // Role options (only academic, exam, campus)
   const roles = [
+    { value: "campus", label: "Campus" },
     { value: "academic", label: "Academic" },
     { value: "exam", label: "Examination" },
-    { value: "campus", label: "Campus" },
+    {value: "non-academic", label: "Non-Academic " },
   ];
 
   // Validation function

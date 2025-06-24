@@ -41,7 +41,7 @@ export default function AdminLoginPage({
       }
       // Redirect to dashboard
       console.log("Login successful, redirecting...");
-      router.push("/admin/dashboard");
+      router.push("/admin/grievance/dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {

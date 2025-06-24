@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { getAllAdmins } from '../services/auth.service';
+import { getAllAdmins } from '../../services/auth.service';
 import axios from 'axios';
 import { useAuth } from "@/context/AuthContext";
 
@@ -88,7 +88,7 @@ const AdminsList = () => {
   if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 py-8 px-0 flex items-start justify-center">
+    <div className="min-h-screen py-8 px-0 flex items-start justify-center px-5">
       <div className="w-full max-w-7xl bg-white rounded-xl shadow border border-blue-100 p-6 mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
           <div>
@@ -104,57 +104,51 @@ const AdminsList = () => {
             style={{ minWidth: 180 }}
           />
         </div>
-        {/* Responsive Table Layout */}
-        <div className="overflow-x-auto rounded-xl scrollbar-hide w-full">
-          <table className="w-full bg-white rounded-xl text-sm border-separate border-spacing-0">
-            <thead className="bg-white border-b border-blue-100">
-              <tr>
-                <th className="px-3 py-2 text-left font-medium text-blue-800 whitespace-nowrap">ID</th>
-                <th className="px-3 py-2 text-left font-medium text-blue-800 whitespace-nowrap">Name</th>
-                <th className="px-3 py-2 text-left font-medium text-blue-800 whitespace-nowrap">Email</th>
-                <th className="px-3 py-2 text-left font-medium text-blue-800 whitespace-nowrap">Role</th>
-                <th className="px-3 py-2 text-left font-medium text-blue-800 whitespace-nowrap">Campus</th>
-                <th className="px-3 py-2 text-center font-medium text-blue-800 whitespace-nowrap">Active</th>
-                <th className="px-3 py-2 text-center font-medium text-blue-800 whitespace-nowrap">Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedAdmins.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="text-center py-6 text-blue-200 text-base">No admins found.</td>
-                </tr>
-              ) : (
-                paginatedAdmins.map((admin, idx) => (
-                  <tr
-                    key={admin.adminid || idx}
-                    className="hover:bg-blue-50 border-b border-blue-50 last:border-b-0"
+        {/* Card Layout for Admins */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 items-center">
+          {paginatedAdmins.length === 0 ? (
+            <div className="col-span-full text-center py-12 text-blue-200 text-lg bg-blue-50 rounded-xl shadow-inner w-full max-w-2xl">
+              No admins found.
+            </div>
+          ) : (
+            paginatedAdmins.map((admin, idx) => (
+              <div
+                key={admin.adminid || idx}
+                className="w-full flex flex-row items-center justify-between p-5 bg-white/90 backdrop-blur-sm border border-blue-200/50 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 min-h-[90px] max-w-2xl mx-auto"
+                style={{ minWidth: 320 }}
+              >
+                <div className="flex-1 min-w-0 flex flex-col gap-1">
+                  <div className="flex items-center gap-3 mb-1">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">{admin.name.charAt(0)}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-semibold text-gray-800 text-base truncate">{admin.name}</div>
+                      <div className="text-xs text-blue-400 truncate">{admin.email}</div>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="bg-blue-50 text-blue-700 rounded px-2 py-0.5 text-xs font-medium border border-blue-100">{admin.role}</span>
+                    <span className="bg-yellow-50 text-yellow-800 rounded px-2 py-0.5 text-xs font-medium border border-yellow-100">{admin.campusname} <span className="text-xs text-blue-300">({admin.campuscode})</span></span>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-2 ml-6 min-w-[90px]">
+                  {admin.isactive ? (
+                    <span className="px-3 py-1 rounded bg-blue-100 text-blue-700 text-xs font-semibold w-full text-center">Active</span>
+                  ) : (
+                    <span className="px-3 py-1 rounded bg-blue-50 text-blue-300 text-xs font-semibold w-full text-center">Inactive</span>
+                  )}
+                  <button
+                    onClick={() => handleDelete(admin.adminid)}
+                    disabled={deletingId === admin.adminid}
+                    className="px-3 py-1 rounded bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium transition w-full"
                   >
-                    <td className="px-3 py-2 font-mono text-xs text-blue-700 whitespace-nowrap align-middle">{admin.adminid}</td>
-                    <td className="px-3 py-2 font-medium text-blue-900 whitespace-nowrap align-middle">{admin.name}</td>
-                    <td className="px-3 py-2 text-blue-700 whitespace-nowrap align-middle">{admin.email}</td>
-                    <td className="px-3 py-2 capitalize text-blue-700 whitespace-nowrap align-middle">{admin.role}</td>
-                    <td className="px-3 py-2 text-blue-700 whitespace-nowrap align-middle">{admin.campusname} <span className="text-xs text-blue-300">({admin.campuscode})</span></td>
-                    <td className="px-3 py-2 text-center align-middle">
-                      {admin.isactive ? (
-                        <span className="inline-block px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-xs font-semibold">Active</span>
-                      ) : (
-                        <span className="inline-block px-2 py-0.5 rounded bg-blue-50 text-blue-300 text-xs font-semibold">Inactive</span>
-                      )}
-                    </td>
-                    <td className="px-3 py-2 text-center align-middle">
-                      <button
-                        onClick={() => handleDelete(admin.adminid)}
-                        disabled={deletingId === admin.adminid}
-                        className="px-2 py-1 rounded bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium transition"
-                      >
-                        {deletingId === admin.adminid ? 'Deleting...' : 'Delete'}
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                    {deletingId === admin.adminid ? 'Deleting...' : 'Delete'}
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
         {/* Pagination Controls */}
         {totalPages > 1 && (
@@ -196,4 +190,4 @@ const AdminsList = () => {
   );
 };
 
-export default AdminsList; 
+export default AdminsList;
