@@ -1,4 +1,4 @@
-import { LayoutDashboard, FilePlus, Clock, CheckCircle, Eye, XCircle, LogOut } from 'lucide-react';
+import { LayoutDashboard, FilePlus, Clock, CheckCircle, Eye, XCircle, LogOut, Users } from 'lucide-react';
 
 export const AdminNavItems = [
     {
@@ -35,6 +35,12 @@ export const AdminNavItems = [
         title: 'Reject Grievance',
         href: '/admin/grievance/reject',
         icon: <XCircle className="w-5 h-5" />,
+        position: 'top',
+    },
+    {
+        title: 'Admins List',
+        href: '/admin/admins',
+        icon: <Users className="w-5 h-5" />,
         position: 'top',
     },
     {
