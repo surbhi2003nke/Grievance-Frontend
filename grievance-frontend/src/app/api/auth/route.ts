@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // Mock auth data - This will be replaced with real authentication later
 const mockAuthData = {
@@ -26,7 +26,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const { rollNo, password } = await request.json();
     const res = await fetch("https://grievanceportal.vercel.app/api/v1/users/auth/login", {
@@ -49,8 +49,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       userId: data.userId || data.rollNo || data.adminId, // adapt to your API response
       userType,
-    });
-  } catch (error) {
+    });  } catch (error) {
+    console.error('Error in auth login:', error);
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
