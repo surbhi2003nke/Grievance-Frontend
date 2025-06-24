@@ -7,18 +7,24 @@ type User = AdminInfo | StudentInfo;
 
 // Updated type to match the actual API response structure
 export type LoginResponse = {
-  success?: boolean;
+  success: boolean;
+  message: string;
   token: string;
-  user: {
+  user?: {
     rollNumber?: string;
     rollno?: string;
     name: string;
     email: string;
-    AdminId?: number;
     // Add other fields that might come from the API
     [key: string]: any;
   };
-  message?: string;
+  admin?: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    campusId: number;
+  };
 };
 
 interface AuthContextType {
@@ -31,7 +37,7 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType>({
+export const AuthContext = createContext<AuthContextType>({
   user: null,
   token: null,
   userType: null,
@@ -72,7 +78,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setToken(data.token);
     
     // Transform the API response to match our expected user types
-    if (userType === 'student') {
+    if (userType === 'student' && data.user) {
       // Map API response to StudentInfo structure
       const studentUser: StudentInfo = {
         rollno: data.user.rollno || data.user.rollNumber || '', // Handle both field names
@@ -88,25 +94,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         year: data.user.year || new Date().getFullYear(),
       };
       setUser(studentUser);
-      console.log("User state updated after student login:", studentUser); // CONSOLE LOG ADDED
+      console.log("User state updated after student login:", studentUser);
       localStorage.setItem('user', JSON.stringify(studentUser));
-    } else if (userType === 'admin') {
+    } else if (userType === 'admin' && data.admin) {
       // Map API response to AdminInfo structure
       const adminUser: AdminInfo = {
-        AdminId: data.user.AdminId || 0,
-        name: data.user.name,
-        email: data.user.email,
-        phone: data.user.phone || data.user.mobile || '',
-        isverified: data.user.isverified || false,
-        IsActive: data.user.IsActive || true,
-        LastLogin: data.user.LastLogin || new Date().toISOString(),
-        createdAt: data.user.createdAt || new Date().toISOString(),
-        updatedAt: data.user.updatedAt || new Date().toISOString(),
-        role: data.user.role || [],
-        permissions: data.user.permissions || [],
+        AdminId: parseInt(data.admin.id.split('_')[1]), // Convert string ID to number
+        name: data.admin.name,
+        email: data.admin.email,
+        role: [data.admin.role], // Convert single role to array
+        phone: '', // Default value as it's not in the new response
+        isverified: true, // Default value
+        IsActive: true, // Default value
+        LastLogin: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        permissions: [], // Default empty array for permissions
       };
       setUser(adminUser);
-      console.log("User state updated after admin login:", adminUser); // CONSOLE LOG ADDED
+      console.log("User state updated after admin login:", adminUser);
       localStorage.setItem('user', JSON.stringify(adminUser));
     }
     

@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState, type FormEvent } from "react"
-import Captcha from "./Captcha"
+import Captcha from "../Captcha"
 import { FileText, Upload, AlertCircle, CheckCircle } from "lucide-react"
 import { GrievanceCategory } from "@/app/api/grievance-types/route"
 import { useAuth } from "@/context/AuthContext"
@@ -26,9 +26,6 @@ const GrievanceForm = () => {
   ];
   const examinationKeywords = [
     "exam", "examination", "revaluation", "result", "paper", "course", "admit card", "supplementary", "backlog", "retotaling", "rechecking", "marksheet", "hall ticket"
-  ];
-  const nonAcademicKeywords = [
-    "hostel", "mess", "library", "transport", "infrastructure", "facility", "discipline", "ragging", "harassment", "sports", "medical", "canteen", "wifi", "maintenance", "cleanliness", "security", "event", "club", "cultural", "extra-curricular", "parking", "id card", "bus", "accommodation", "room", "laundry", "water", "electricity", "food", "complaint", "general", "hosteller", "warden", "caretaker", "lost", "found", "bullying", "health", "doctor", "ambulance", "recreation", "gym", "fitness"
   ];
 
   function detectCategory(type: string): "Academic" | "Non-Academic" | "Examination" | "Optional" | "" {
@@ -115,20 +112,20 @@ const GrievanceForm = () => {
         campus: 'gbc',
         subject: selectedType,
         description: description,
-        issue_type: issueTypeToSend,
-        attachment: addedAttachment // Sending boolean status, not the file.
+        issue_type: issueTypeToSend.toUpperCase(),
+        attachment: addedAttachment
       };
 
       // Log the JSON request details for Postman debugging
-      console.log("--- JSON Request Details ---");
-      console.log("URL:", "https://grievanceportal.vercel.app/api/v1/grievances");
-      console.log("Method:", "POST");
-      console.log("Headers:", JSON.stringify({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }, null, 2));
+      // console.log("--- JSON Request Details ---");
+      // console.log("URL:", "https://grievanceportal.vercel.app/api/v1/grievances");
+      // console.log("Method:", "POST");
+      // console.log("Headers:", JSON.stringify({
+      //   'Authorization': `Bearer ${token}`,
+      //   'Content-Type': 'application/json'
+      // }, null, 2));
       console.log("Body (JSON):", JSON.stringify(requestBody, null, 2));
-      console.log("----------------------------");
+      // console.log("----------------------------");
 
       const res = await fetch("https://grievanceportal.vercel.app/api/v1/grievances", {
         method: "POST",
@@ -155,9 +152,10 @@ const GrievanceForm = () => {
       setCaptchaVerified(false)
       setAddedAttachment(false)
       setCaptchaReset(r => !r)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error submitting form:", err);
-      alert(`Error submitting form: ${err.message}`)
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+      alert(`Error submitting form: ${errorMessage}`)
     } finally {
       setSubmitting(false)
     }

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage({
@@ -22,22 +22,22 @@ export default function AdminLoginPage({
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(
-        "https://grievanceportal.vercel.app/api/v1/admin/auth/simple-login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const res = await fetch("https://grievanceportal.vercel.app/api/v1/admin/auth/simple-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
       const data = await res.json();
+      console.log(data);
+      
       if (!res.ok) throw new Error(data.message || "Login failed");
+
 
       // Use AuthContext login with the full data object
       login(data, "admin");
 
       if (onLogin) {
-        onLogin(data.user, data.token); // Pass user object and token
+        onLogin(data.admin, data.token); // Pass admin object and token
       }
       // Redirect to dashboard
       console.log("Login successful, redirecting...");

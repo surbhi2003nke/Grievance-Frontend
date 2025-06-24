@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { StudentInfo } from "@/app/api/student-info/route";
+import { AdminInfo } from "@/app/api/admin-info/route";
 
 interface NavbarProps {
   className?: string;
@@ -55,7 +56,8 @@ const Navbar = ({ className = "" }: NavbarProps) => {
     }
 
     if (userType === "admin") {
-      return user.name;
+      const admin = user as AdminInfo;
+      return admin.name;
     }
 
     if (userType === "student") {
@@ -65,9 +67,11 @@ const Navbar = ({ className = "" }: NavbarProps) => {
 
     return "Unknown user";
   };
-
   const getUserRole = () => {
-    if (userType === "admin") return "Administrator";
+    if (userType === "admin" && user) {
+      const admin = user as AdminInfo;
+      return admin.role[0] || "Admin";
+    }
     if (userType === "student") return "Student";
     return "Guest";
   };

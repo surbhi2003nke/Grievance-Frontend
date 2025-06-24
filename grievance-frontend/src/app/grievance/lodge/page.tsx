@@ -1,4 +1,4 @@
-import GrievanceForm from '@/components/GrievanceForm'
+import GrievanceForm from '@/components/studentComponents/GrievanceForm'
 import React from 'react'
 
 const lodge = () => {
